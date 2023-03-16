@@ -1,0 +1,56 @@
+<.header>
+  Contas bancárias
+  <:actions>
+    <.link patch={~p"/bank_accounts/new"}>
+      <.button>Nova conta</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table
+  id="bank_accounts"
+  rows={@streams.bank_accounts}
+  row_click={fn {_id, bank_account} -> JS.navigate(~p"/bank_accounts/#{bank_account}") end}
+>
+  <:col :let={{_id, bank_account}} label="Banco">
+    <%= bank_account.bank %>
+  </:col>
+  <:col :let={{_id, bank_account}} label="Saldo inicial">
+    <%= money(bank_account.initial_balance) %>
+  </:col>
+  <:col :let={{_id, bank_account}} label="Data do saldo">
+    <%= local_date(bank_account.initial_balance_date) %>
+  </:col>
+  <:action :let={{_id, bank_account}}>
+    <div class="sr-only">
+      <.link navigate={~p"/bank_accounts/#{bank_account}"}>Exibir</.link>
+    </div>
+    <.link patch={~p"/bank_accounts/#{bank_account}/edit"}>Editar</.link>
+  </:action>
+  <:action :let={{id, bank_account}}>
+    <.link
+      phx-click={JS.push("delete", value: %{id: bank_account.id}) |> hide("##{id}")}
+      data-confirm="Tem certeza?"
+    >
+      Deletar
+    </.link>
+  </:action>
+</.table>
+
+<.modal
+  :if={@live_action in [:new, :edit]}
+  id="bank_account-modal"
+  show
+  on_cancel={JS.navigate(~p"/bank_accounts")}
+>
+  <.live_component
+    module={ZaqueuWeb.BankAccountLive.FormComponent}
+    id={@bank_account.id || :new}
+    title={@page_title}
+    action={@live_action}
+    bank_account={@bank_account}
+    user_id={@current_user.id}
+    banks={@banks}
+    patch={~p"/bank_accounts"}
+  />
+</.modal>
