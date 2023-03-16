@@ -1,22 +1,29 @@
-<.header>
-  <%= @bank_account.bank %>
-  <:actions>
-    <.link patch={~p"/bank_accounts/#{@bank_account}/show/edit"} phx-click={JS.push_focus()}>
-      <.button>Editar</.button>
-    </.link>
-  </:actions>
-</.header>
+<div class="bg-white rounded-md p-5">
+  <.header>
+    <%= @bank_account.bank %>
+    <:actions>
+      <.link patch={~p"/bank_accounts/#{@bank_account}/show/edit"} phx-click={JS.push_focus()}>
+        <.button>Editar</.button>
+      </.link>
+    </:actions>
+  </.header>
 
-<.list>
-  <:item title="Saldo inicial"><%= money(@bank_account.initial_balance) %></:item>
-  <:item title="Data do saldo"><%= local_date(@bank_account.initial_balance_date) %></:item>
-  <:item title="Agência"><%= @bank_account.agency %></:item>
-  <:item title="Conta"><%= @bank_account.account_number %></:item>
-</.list>
+  <.list>
+    <:item title="Saldo inicial"><%= money(@bank_account.initial_balance) %></:item>
+    <:item title="Data do saldo"><%= local_date(@bank_account.initial_balance_date) %></:item>
+    <:item title="Agência"><%= @bank_account.agency %></:item>
+    <:item title="Conta"><%= @bank_account.account_number %></:item>
+  </.list>
 
-<.back navigate={~p"/bank_accounts"}>Voltar</.back>
+  <.back navigate={~p"/bank_accounts"}>Voltar</.back>
+</div>
 
-<.modal :if={@live_action == :edit} id="bank_account-modal" show on_cancel={JS.patch(~p"/bank_accounts/#{@bank_account}")}>
+<.modal
+  :if={@live_action == :edit}
+  id="bank_account-modal"
+  show
+  on_cancel={JS.patch(~p"/bank_accounts/#{@bank_account}")}
+>
   <.live_component
     module={ZaqueuWeb.BankAccountLive.FormComponent}
     id={@bank_account.id}

@@ -1,5 +1,5 @@
 defmodule ZaqueuWeb.BankAccountLive.Index do
-  use ZaqueuWeb, :live_view
+  use ZaqueuWeb, :live_logged_in
 
   import ZaqueuWeb.DisplayHelpers, only: [local_date: 1, money: 1]
 

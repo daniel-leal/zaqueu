@@ -3,34 +3,57 @@ defmodule ZaqueuWeb.UserLoginLive do
 
   def render(assigns) do
     ~H"""
-    <div class="mx-auto max-w-sm">
-      <.header class="text-center">
-        Sign in to account
-        <:subtitle>
-          Don't have an account?
+    <div class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-slate-800 dark:border-gray-700">
+      <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
+        <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
+          Acesse sua Conta
+        </h1>
+        <p class="mt-2 text-sm leading-6 text-zinc-200">
+          Ainda não tem uma conta?
           <.link navigate={~p"/users/register"} class="font-semibold text-brand hover:underline">
-            Sign up
+            Registre-se
           </.link>
-          for an account now.
-        </:subtitle>
-      </.header>
+        </p>
+        <.simple_form
+          for={@form}
+          id="login_form"
+          action={~p"/users/log_in"}
+          color="bg-slate-800"
+          phx-update="ignore"
+        >
+          <.input
+            field={@form[:email]}
+            type="email"
+            label="Email"
+            label_color="text-gray-300"
+            class="border border-gray-300 rounded text-gray-50 bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800"
+            placeholder="email@example.com"
+            required
+          />
 
-      <.simple_form for={@form} id="login_form" action={~p"/users/log_in"} phx-update="ignore">
-        <.input field={@form[:email]} type="email" label="Email" required />
-        <.input field={@form[:password]} type="password" label="Password" required />
+          <.input
+            field={@form[:password]}
+            type="password"
+            label="Senha"
+            label_color="text-gray-300"
+            class="border border-gray-300 rounded text-gray-50 bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800"
+            placeholder="••••••••••"
+            required
+          />
 
-        <:actions>
-          <.input field={@form[:remember_me]} type="checkbox" label="Keep me logged in" />
-          <.link href={~p"/users/reset_password"} class="text-sm font-semibold">
-            Forgot your password?
-          </.link>
-        </:actions>
-        <:actions>
-          <.button phx-disable-with="Signing in..." class="w-full">
-            Sign in <span aria-hidden="true">→</span>
-          </.button>
-        </:actions>
-      </.simple_form>
+          <:actions>
+            <.input field={@form[:remember_me]} type="checkbox" label="Mantenha-me logado" />
+            <.link href={~p"/users/reset_password"} class="text-sm font-semibold text-gray-300">
+              Esqueceu sua senha?
+            </.link>
+          </:actions>
+          <:actions>
+            <.button phx-disable-with="Signing in..." class="w-full">
+              Login <span aria-hidden="true">→</span>
+            </.button>
+          </:actions>
+        </.simple_form>
+      </div>
     </div>
     """
   end

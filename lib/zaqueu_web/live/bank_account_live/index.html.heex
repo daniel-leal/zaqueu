@@ -1,5 +1,6 @@
 <.header>
-  Contas bancárias
+  Listagem
+  <:subtitle>Gerenciamento de contas bancárias</:subtitle>
   <:actions>
     <.link patch={~p"/bank_accounts/new"}>
       <.button>Nova conta</.button>
@@ -29,6 +30,7 @@
   </:action>
   <:action :let={{id, bank_account}}>
     <.link
+      class="text-red-400"
       phx-click={JS.push("delete", value: %{id: bank_account.id}) |> hide("##{id}")}
       data-confirm="Tem certeza?"
     >

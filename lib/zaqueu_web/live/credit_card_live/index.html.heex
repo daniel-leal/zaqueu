@@ -1,5 +1,4 @@
 <.header>
-  Cartões de crédito
   <:actions>
     <.link patch={~p"/credit_cards/new"}>
       <.button>Novo cartão</.button>
@@ -24,6 +23,7 @@
   </:action>
   <:action :let={{id, credit_card}}>
     <.link
+      class="text-red-400"
       phx-click={JS.push("delete", value: %{id: credit_card.id}) |> hide("##{id}")}
       data-confirm="Tem certeza?"
     >

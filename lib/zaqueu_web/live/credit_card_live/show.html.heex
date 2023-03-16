@@ -1,21 +1,28 @@
-<.header>
-  Cartão <%= @credit_card.description %>
-  <:actions>
-    <.link patch={~p"/credit_cards/#{@credit_card}/show/edit"} phx-click={JS.push_focus()}>
-      <.button>Editar</.button>
-    </.link>
-  </:actions>
-</.header>
+<div class="bg-white rounded-md p-5">
+  <.header>
+    Cartão <%= @credit_card.description %>
+    <:actions>
+      <.link patch={~p"/credit_cards/#{@credit_card}/show/edit"} phx-click={JS.push_focus()}>
+        <.button>Editar</.button>
+      </.link>
+    </:actions>
+  </.header>
 
-<.list>
-  <:item title="Bandeira"><%= @credit_card.flag %></:item>
-  <:item title="Fechamento"><%= @credit_card.closing_day %></:item>
-  <:item title="Limite"><%= money(@credit_card.limit) %></:item>
-</.list>
+  <.list>
+    <:item title="Bandeira"><%= @credit_card.flag %></:item>
+    <:item title="Fechamento"><%= @credit_card.closing_day %></:item>
+    <:item title="Limite"><%= money(@credit_card.limit) %></:item>
+  </.list>
 
-<.back navigate={~p"/credit_cards"}>Voltar</.back>
+  <.back navigate={~p"/credit_cards"}>Voltar</.back>
+</div>
 
-<.modal :if={@live_action == :edit} id="credit_card-modal" show on_cancel={JS.patch(~p"/credit_cards/#{@credit_card}")}>
+<.modal
+  :if={@live_action == :edit}
+  id="credit_card-modal"
+  show
+  on_cancel={JS.patch(~p"/credit_cards/#{@credit_card}")}
+>
   <.live_component
     module={ZaqueuWeb.CreditCardLive.FormComponent}
     id={@credit_card.id}

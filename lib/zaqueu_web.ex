@@ -58,6 +58,15 @@ defmodule ZaqueuWeb do
     end
   end
 
+  def live_logged_in do
+    quote do
+      use Phoenix.LiveView,
+        layout: {ZaqueuWeb.Layouts, :logged_in}
+
+      unquote(html_helpers())
+    end
+  end
+
   def live_component do
     quote do
       use Phoenix.LiveComponent
