@@ -25,7 +25,8 @@ defmodule ZaqueuWeb.BankAccountLive.FormComponent do
           prompt="Selecione um banco..."
           options={Enum.map(@banks, &{&1.name, &1.id})}
         />
-
+        <.input field={@form[:agency]} type="text" label="Agência" />
+        <.input field={@form[:account_number]} type="text" label="Conta" />
         <.input
           field={@form[:initial_balance]}
           label="Saldo"
@@ -33,7 +34,6 @@ defmodule ZaqueuWeb.BankAccountLive.FormComponent do
           step="0.01"
           placeholder="0.00"
         />
-
         <.input
           field={@form[:initial_balance_date]}
           type="date"
@@ -44,8 +44,6 @@ defmodule ZaqueuWeb.BankAccountLive.FormComponent do
               else: @form[:initial_balance_date].value
           }
         />
-        <.input field={@form[:agency]} type="text" label="Agência" />
-        <.input field={@form[:account_number]} type="text" label="Conta" />
         <:actions>
           <.button phx-disable-with="Salvando...">Salvar</.button>
         </:actions>

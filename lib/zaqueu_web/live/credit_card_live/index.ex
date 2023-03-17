@@ -4,7 +4,7 @@ defmodule ZaqueuWeb.CreditCardLive.Index do
   import ZaqueuWeb.DisplayHelpers, only: [money: 1]
 
   alias Zaqueu.Financial
-  alias Zaqueu.Financial.CreditCard
+  alias Zaqueu.Financial.Schemas.CreditCard
 
   @impl true
   def mount(_params, _session, socket) do

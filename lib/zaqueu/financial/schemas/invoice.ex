@@ -1,16 +1,16 @@
-defmodule Zaqueu.Financial.Invoice do
+defmodule Zaqueu.Financial.Schemas.Invoice do
   use Ecto.Schema
   import Ecto.Changeset
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
   schema "invoices" do
-    field :amount, :decimal
-    field :expiry_date, :date
-    field :is_open, :boolean, default: false
-    field :is_paid, :boolean, default: false
-    field :credit_card_id, :binary_id
-    field :user_id, :binary_id
+    field(:amount, :decimal)
+    field(:expiry_date, :date)
+    field(:is_open, :boolean, default: false)
+    field(:is_paid, :boolean, default: false)
+    field(:credit_card_id, :binary_id)
+    field(:user_id, :binary_id)
 
     timestamps()
   end

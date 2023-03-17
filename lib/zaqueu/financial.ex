@@ -4,9 +4,12 @@ defmodule Zaqueu.Financial do
   """
 
   import Ecto.Query, warn: false
-  alias Zaqueu.Repo
 
-  alias Zaqueu.Financial.Bank
+  alias Zaqueu.Financial.Commands.BankAccountCommands
+  alias Zaqueu.Financial.Commands.CreditCardCommands
+  alias Zaqueu.Financial.Queries.BankQueries
+  alias Zaqueu.Financial.Queries.BankAccountQueries
+  alias Zaqueu.Financial.Queries.CreditCardQueries
 
   @doc """
   Returns the list of banks.
@@ -17,9 +20,7 @@ defmodule Zaqueu.Financial do
       [%Bank{}, ...]
 
   """
-  def list_banks do
-    Repo.all(from(b in Bank, order_by: :name))
-  end
+  defdelegate list_banks(), to: BankQueries, as: :list
 
   @doc """
   Gets a single bank.
@@ -35,9 +36,7 @@ defmodule Zaqueu.Financial do
       ** (Ecto.NoResultsError)
 
   """
-  def get_bank!(id), do: Repo.get!(Bank, id)
-
-  alias Zaqueu.Financial.BankAccount
+  defdelegate get_bank!(id), to: BankQueries, as: :get_by_id
 
   @doc """
   Returns the list of bank_accounts.
@@ -48,16 +47,7 @@ defmodule Zaqueu.Financial do
       [%BankAccount{}, ...]
 
   """
-  def list_bank_accounts(user_id) do
-    bank_query = from(b in Bank, select: b.name, order_by: :name)
-
-    Repo.all(
-      from(b in BankAccount,
-        where: b.user_id == ^user_id,
-        preload: [bank: ^bank_query]
-      )
-    )
-  end
+  defdelegate list_bank_accounts(user_id), to: BankAccountQueries, as: :list
 
   @doc """
   Gets a single bank_account.
@@ -73,16 +63,7 @@ defmodule Zaqueu.Financial do
       ** (Ecto.NoResultsError)
 
   """
-  def get_bank_account!(id) do
-    bank_query = from(b in Bank, select: b.name, order_by: :name)
-
-    Repo.one!(
-      from(b in BankAccount,
-        where: b.id == ^id,
-        preload: [bank: ^bank_query]
-      )
-    )
-  end
+  defdelegate get_bank_account!(id), to: BankAccountQueries, as: :get_by_id
 
   @doc """
   Creates a bank_account.
@@ -96,11 +77,9 @@ defmodule Zaqueu.Financial do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_bank_account(attrs \\ %{}) do
-    %BankAccount{}
-    |> BankAccount.changeset(attrs)
-    |> Repo.insert()
-  end
+  defdelegate create_bank_account(attrs \\ %{}),
+    to: BankAccountCommands,
+    as: :create
 
   @doc """
   Updates a bank_account.
@@ -114,11 +93,9 @@ defmodule Zaqueu.Financial do
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_bank_account(%BankAccount{} = bank_account, attrs) do
-    bank_account
-    |> BankAccount.changeset(attrs)
-    |> Repo.update()
-  end
+  defdelegate update_bank_account(bank_account, attrs \\ %{}),
+    to: BankAccountCommands,
+    as: :update
 
   @doc """
   Deletes a bank_account.
@@ -132,9 +109,9 @@ defmodule Zaqueu.Financial do
       {:error, %Ecto.Changeset{}}
 
   """
-  def delete_bank_account(%BankAccount{} = bank_account) do
-    Repo.delete(bank_account)
-  end
+  defdelegate delete_bank_account(bank_account),
+    to: BankAccountCommands,
+    as: :delete
 
   @doc """
   Returns an `%Ecto.Changeset{}` for tracking bank_account changes.
@@ -145,11 +122,9 @@ defmodule Zaqueu.Financial do
       %Ecto.Changeset{data: %BankAccount{}}
 
   """
-  def change_bank_account(%BankAccount{} = bank_account, attrs \\ %{}) do
-    BankAccount.changeset(bank_account, attrs)
-  end
-
-  alias Zaqueu.Financial.CreditCard
+  defdelegate change_bank_account(bank_account, attrs \\ %{}),
+    to: BankAccountCommands,
+    as: :change
 
   @doc """
   Returns the list of credit_cards.
@@ -160,9 +135,7 @@ defmodule Zaqueu.Financial do
       [%CreditCard{}, ...]
 
   """
-  def list_credit_cards do
-    Repo.all(CreditCard)
-  end
+  defdelegate list_credit_cards(), to: CreditCardQueries, as: :list
 
   @doc """
   Gets a single credit_card.
@@ -178,7 +151,7 @@ defmodule Zaqueu.Financial do
       ** (Ecto.NoResultsError)
 
   """
-  def get_credit_card!(id), do: Repo.get!(CreditCard, id)
+  defdelegate get_credit_card!(id), to: CreditCardQueries, as: :get_by_id!
 
   @doc """
   Creates a credit_card.
@@ -192,11 +165,9 @@ defmodule Zaqueu.Financial do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_credit_card(attrs \\ %{}) do
-    %CreditCard{}
-    |> CreditCard.changeset(attrs)
-    |> Repo.insert()
-  end
+  defdelegate create_credit_card(attrs \\ %{}),
+    to: CreditCardCommands,
+    as: :create
 
   @doc """
   Updates a credit_card.
@@ -210,11 +181,9 @@ defmodule Zaqueu.Financial do
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_credit_card(%CreditCard{} = credit_card, attrs) do
-    credit_card
-    |> CreditCard.changeset(attrs)
-    |> Repo.update()
-  end
+  defdelegate update_credit_card(credit_card, attrs \\ %{}),
+    to: CreditCardCommands,
+    as: :update
 
   @doc """
   Deletes a credit_card.
@@ -228,9 +197,9 @@ defmodule Zaqueu.Financial do
       {:error, %Ecto.Changeset{}}
 
   """
-  def delete_credit_card(%CreditCard{} = credit_card) do
-    Repo.delete(credit_card)
-  end
+  defdelegate delete_credit_card(credit_card),
+    to: CreditCardCommands,
+    as: :delete
 
   @doc """
   Returns an `%Ecto.Changeset{}` for tracking credit_card changes.
@@ -241,7 +210,7 @@ defmodule Zaqueu.Financial do
       %Ecto.Changeset{data: %CreditCard{}}
 
   """
-  def change_credit_card(%CreditCard{} = credit_card, attrs \\ %{}) do
-    CreditCard.changeset(credit_card, attrs)
-  end
+  defdelegate change_credit_card(credit_card, attrs \\ %{}),
+    to: CreditCardCommands,
+    as: :change
 end

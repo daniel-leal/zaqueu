@@ -1,4 +1,4 @@
-defmodule Zaqueu.Financial.Bank do
+defmodule Zaqueu.Financial.Schemas.Bank do
   use Ecto.Schema
   import Ecto.Changeset
 

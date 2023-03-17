@@ -4,7 +4,7 @@ defmodule ZaqueuWeb.BankAccountLive.Index do
   import ZaqueuWeb.DisplayHelpers, only: [local_date: 1, money: 1]
 
   alias Zaqueu.Financial
-  alias Zaqueu.Financial.BankAccount
+  alias Zaqueu.Financial.Schemas.BankAccount
 
   @impl true
   def mount(_params, _session, socket) do

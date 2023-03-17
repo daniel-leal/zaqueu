@@ -1,6 +1,14 @@
-defmodule Zaqueu.Financial.CreditCard do
+defmodule Zaqueu.Financial.Schemas.CreditCard do
   use Ecto.Schema
   import Ecto.Changeset
+
+  @flags [
+    "MasterCard",
+    "Visa",
+    "Elo",
+    "Hipercard",
+    "Amex"
+  ]
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
