@@ -45,7 +45,9 @@ defmodule Zaqueu.Identity.User do
   defp validate_email(changeset, opts) do
     changeset
     |> validate_required([:email])
-    |> validate_format(:email, ~r/^[^\s]+@[^\s]+$/, message: "must have the @ sign and no spaces")
+    |> validate_format(:email, ~r/^[^\s]+@[^\s]+$/,
+      message: "Necessário ter o @ e não pode ter espaços"
+    )
     |> validate_length(:email, max: 160)
     |> maybe_validate_unique_email(opts)
   end
@@ -99,7 +101,7 @@ defmodule Zaqueu.Identity.User do
     |> validate_email(opts)
     |> case do
       %{changes: %{email: _}} = changeset -> changeset
-      %{} = changeset -> add_error(changeset, :email, "did not change")
+      %{} = changeset -> add_error(changeset, :email, "Não alterou!")
     end
   end
 
@@ -118,7 +120,7 @@ defmodule Zaqueu.Identity.User do
   def password_changeset(user, attrs, opts \\ []) do
     user
     |> cast(attrs, [:password])
-    |> validate_confirmation(:password, message: "does not match password")
+    |> validate_confirmation(:password, message: "Senhas não combinam")
     |> validate_password(opts)
   end
 
@@ -153,7 +155,7 @@ defmodule Zaqueu.Identity.User do
     if valid_password?(changeset.data, password) do
       changeset
     else
-      add_error(changeset, :current_password, "is not valid")
+      add_error(changeset, :current_password, "Inválido")
     end
   end
 end

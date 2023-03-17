@@ -1,5 +1,5 @@
 defmodule ZaqueuWeb.CreditCardLive.Show do
-  use ZaqueuWeb, :live_view
+  use ZaqueuWeb, :live_logged_in
 
   import ZaqueuWeb.DisplayHelpers, only: [money: 1]
 

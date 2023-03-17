@@ -5,21 +5,33 @@ defmodule ZaqueuWeb.UserConfirmationLive do
 
   def render(%{live_action: :edit} = assigns) do
     ~H"""
-    <div class="mx-auto max-w-sm">
-      <.header class="text-center">Confirm Account</.header>
+    <div class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-slate-800 dark:border-gray-700">
+      <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
+        <h1 class="text-center text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
+          Confirmar conta!
+        </h1>
+        <.simple_form
+          for={@form}
+          id="confirmation_form"
+          phx-submit="confirm_account"
+          color="bg-slate-800"
+        >
+          <.input field={@form[:token]} type="hidden" />
+          <:actions>
+            <.button phx-disable-with="Confirming..." class="w-full">Confirmar minha conta</.button>
+          </:actions>
+        </.simple_form>
 
-      <.simple_form for={@form} id="confirmation_form" phx-submit="confirm_account">
-        <.input field={@form[:token]} type="hidden" />
-        <:actions>
-          <.button phx-disable-with="Confirming..." class="w-full">Confirm my account</.button>
-        </:actions>
-      </.simple_form>
-
-      <p class="text-center mt-4">
-        <.link href={~p"/users/register"}>Register</.link>
-        |
-        <.link href={~p"/users/log_in"}>Log in</.link>
-      </p>
+        <p class="text-center mt-4">
+          <.link href={~p"/users/log_in"} class="text-gray-400 hover:underline">
+            Acessar
+          </.link>
+          <span class="text-gray-400">|</span>
+          <.link href={~p"/users/register"} class="text-gray-400 hover:underline">
+            Registre-se
+          </.link>
+        </p>
+      </div>
     </div>
     """
   end
@@ -36,7 +48,7 @@ defmodule ZaqueuWeb.UserConfirmationLive do
       {:ok, _} ->
         {:noreply,
          socket
-         |> put_flash(:info, "User confirmed successfully.")
+         |> put_flash(:info, "Usuário confirmado com sucesso!")
          |> redirect(to: ~p"/")}
 
       :error ->
@@ -51,7 +63,7 @@ defmodule ZaqueuWeb.UserConfirmationLive do
           %{} ->
             {:noreply,
              socket
-             |> put_flash(:error, "User confirmation link is invalid or it has expired.")
+             |> put_flash(:error, "O link de confirmação expirou, ou é inválido.")
              |> redirect(to: ~p"/")}
         end
     end

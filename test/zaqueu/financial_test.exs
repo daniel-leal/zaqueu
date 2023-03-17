@@ -165,7 +165,12 @@ defmodule Zaqueu.FinancialTest do
     end
 
     test "create_credit_card/1 with valid data creates a credit_card" do
-      valid_attrs = %{closing_day: 42, description: "some description", flag: "some flag", limit: "120.5"}
+      valid_attrs = %{
+        closing_day: 42,
+        description: "some description",
+        flag: "some flag",
+        limit: "120.5"
+      }
 
       assert {:ok, %CreditCard{} = credit_card} = Financial.create_credit_card(valid_attrs)
       assert credit_card.closing_day == 42
@@ -180,9 +185,17 @@ defmodule Zaqueu.FinancialTest do
 
     test "update_credit_card/2 with valid data updates the credit_card" do
       credit_card = credit_card_fixture()
-      update_attrs = %{closing_day: 43, description: "some updated description", flag: "some updated flag", limit: "456.7"}
 
-      assert {:ok, %CreditCard{} = credit_card} = Financial.update_credit_card(credit_card, update_attrs)
+      update_attrs = %{
+        closing_day: 43,
+        description: "some updated description",
+        flag: "some updated flag",
+        limit: "456.7"
+      }
+
+      assert {:ok, %CreditCard{} = credit_card} =
+               Financial.update_credit_card(credit_card, update_attrs)
+
       assert credit_card.closing_day == 43
       assert credit_card.description == "some updated description"
       assert credit_card.flag == "some updated flag"
@@ -191,7 +204,10 @@ defmodule Zaqueu.FinancialTest do
 
     test "update_credit_card/2 with invalid data returns error changeset" do
       credit_card = credit_card_fixture()
-      assert {:error, %Ecto.Changeset{}} = Financial.update_credit_card(credit_card, @invalid_attrs)
+
+      assert {:error, %Ecto.Changeset{}} =
+               Financial.update_credit_card(credit_card, @invalid_attrs)
+
       assert credit_card == Financial.get_credit_card!(credit_card.id)
     end
 

@@ -48,7 +48,7 @@ defmodule ZaqueuWeb.UserLoginLive do
             </.link>
           </:actions>
           <:actions>
-            <.button phx-disable-with="Signing in..." class="w-full">
+            <.button phx-disable-with="Acessando..." class="w-full">
               Login <span aria-hidden="true">→</span>
             </.button>
           </:actions>

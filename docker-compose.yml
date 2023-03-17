@@ -6,5 +6,11 @@ services:
     ports:
       - 5432:5432
     restart: always
+    volumes:
+      - pgdata:/var/lib/postgresql/data
     environment:
       POSTGRES_PASSWORD: Secret#123
+
+volumes:
+  pgdata:
+    driver: local

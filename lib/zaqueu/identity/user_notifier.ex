@@ -8,7 +8,7 @@ defmodule Zaqueu.Identity.UserNotifier do
     email =
       new()
       |> to(recipient)
-      |> from({"Zaqueu", "contact@example.com"})
+      |> from({"Zaqueu", "zaqueu@noreply.com"})
       |> subject(subject)
       |> text_body(body)
 
@@ -21,17 +21,17 @@ defmodule Zaqueu.Identity.UserNotifier do
   Deliver instructions to confirm account.
   """
   def deliver_confirmation_instructions(user, url) do
-    deliver(user.email, "Confirmation instructions", """
+    deliver(user.email, "Instruções de confirmação", """
 
     ==============================
 
-    Hi #{user.email},
+    Olá #{user.email},
 
-    You can confirm your account by visiting the URL below:
+    Você pode confirmar seu cadastro clicando no link abaixo:
 
     #{url}
 
-    If you didn't create an account with us, please ignore this.
+    Se não foi você que criou esta conta, por favor ignore.
 
     ==============================
     """)
@@ -41,17 +41,17 @@ defmodule Zaqueu.Identity.UserNotifier do
   Deliver instructions to reset a user password.
   """
   def deliver_reset_password_instructions(user, url) do
-    deliver(user.email, "Reset password instructions", """
+    deliver(user.email, "Instruções de recuperação de senha", """
 
     ==============================
 
-    Hi #{user.email},
+    Olá #{user.email},
 
-    You can reset your password by visiting the URL below:
+    Você pode resetar sua senha clicano no link abaixo:
 
     #{url}
 
-    If you didn't request this change, please ignore this.
+    Se não foi você que fez esta solicitação, por favor ignore.
 
     ==============================
     """)
@@ -61,18 +61,17 @@ defmodule Zaqueu.Identity.UserNotifier do
   Deliver instructions to update a user email.
   """
   def deliver_update_email_instructions(user, url) do
-    deliver(user.email, "Update email instructions", """
+    deliver(user.email, "Instruções de atualização de e-mail", """
 
     ==============================
 
-    Hi #{user.email},
+    Olá #{user.email},
 
-    You can change your email by visiting the URL below:
+    Você pode alterar seu e-mail clicando no link abaixo:
 
     #{url}
 
-    If you didn't request this change, please ignore this.
-
+    Se não foi você que fez esta solicitação, por favor ignore.
     ==============================
     """)
   end
