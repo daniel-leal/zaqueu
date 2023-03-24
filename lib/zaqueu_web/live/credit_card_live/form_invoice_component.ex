@@ -1,4 +1,4 @@
-defmodule ZaqueuWeb.CreditCardLive.FormComponent do
+defmodule ZaqueuWeb.CreditCardLive.FormInvoiceComponent do
   use ZaqueuWeb, :live_component
 
   alias Zaqueu.Financial
@@ -13,22 +13,12 @@ defmodule ZaqueuWeb.CreditCardLive.FormComponent do
 
       <.simple_form
         for={@form}
-        id="credit_card-form"
+        id="invoice-form"
         phx-target={@myself}
         phx-change="validate"
         phx-submit="save"
       >
-        <.input field={@form[:user_id]} type="hidden" value={@user_id} />
-        <.input field={@form[:description]} type="text" label="Descrição" />
-        <.input
-          field={@form[:flag]}
-          type="select"
-          label="Bandeira"
-          options={Financial.flags()}
-        />
-        <.input field={@form[:closing_day]} type="number" label="Dia de fechamento" />
-        <.input field={@form[:expiry_day]} type="number" label="Dia de vencimento" />
-        <.input field={@form[:limit]} type="number" label="Limite" step="0.01" />
+        <.input field={@form[:expiry_date]} type="date" label="Data de Vencimento" />
         <:actions>
           <.button phx-disable-with="Salvando...">Salvar</.button>
         </:actions>
@@ -38,8 +28,8 @@ defmodule ZaqueuWeb.CreditCardLive.FormComponent do
   end
 
   @impl true
-  def update(%{credit_card: credit_card} = assigns, socket) do
-    changeset = Financial.change_credit_card(credit_card)
+  def update(%{invoice: invoice} = assigns, socket) do
+    changeset = Financial.change_invoice(invoice)
 
     {:ok,
      socket
@@ -48,10 +38,10 @@ defmodule ZaqueuWeb.CreditCardLive.FormComponent do
   end
 
   @impl true
-  def handle_event("validate", %{"credit_card" => credit_card_params}, socket) do
+  def handle_event("validate", %{"invoice" => invoice_params}, socket) do
     changeset =
-      socket.assigns.credit_card
-      |> Financial.change_credit_card(credit_card_params)
+      socket.assigns.invoice
+      |> Financial.change_invoice(invoice_params)
       |> Map.put(:action, :validate)
 
     {:noreply, assign_form(socket, changeset)}

@@ -7,9 +7,11 @@ defmodule Zaqueu.Financial do
 
   alias Zaqueu.Financial.Commands.BankAccountCommands
   alias Zaqueu.Financial.Commands.CreditCardCommands
-  alias Zaqueu.Financial.Queries.BankQueries
+  alias Zaqueu.Financial.Commands.InvoiceCommands
   alias Zaqueu.Financial.Queries.BankAccountQueries
+  alias Zaqueu.Financial.Queries.BankQueries
   alias Zaqueu.Financial.Queries.CreditCardQueries
+  alias Zaqueu.Financial.Queries.InvoiceQueries
 
   @doc """
   Returns the list of banks.
@@ -135,7 +137,7 @@ defmodule Zaqueu.Financial do
       [%CreditCard{}, ...]
 
   """
-  defdelegate list_credit_cards(), to: CreditCardQueries, as: :list
+  defdelegate list_credit_cards(user_id), to: CreditCardQueries, as: :list
 
   @doc """
   Gets a single credit_card.
@@ -152,6 +154,8 @@ defmodule Zaqueu.Financial do
 
   """
   defdelegate get_credit_card!(id), to: CreditCardQueries, as: :get_by_id!
+
+  defdelegate flags(), to: CreditCardQueries, as: :flags
 
   @doc """
   Creates a credit_card.
@@ -212,5 +216,26 @@ defmodule Zaqueu.Financial do
   """
   defdelegate change_credit_card(credit_card, attrs \\ %{}),
     to: CreditCardCommands,
+    as: :change
+
+  @doc """
+  Returns the list of invoices of specific credit_card.
+
+  ## Examples
+
+      iex> list_invoices(credit_card_id)
+      [%Invoice{}, ...]
+
+  """
+  defdelegate list_invoices(credit_card_id), to: InvoiceQueries, as: :list
+
+  defdelegate get_invoice!(id), to: InvoiceQueries, as: :get_by_id!
+
+  defdelegate get_sum_by_credit_card(credit_card_id),
+    to: InvoiceQueries,
+    as: :sum_by_credit_card
+
+  defdelegate change_invoice(invoice, attrs \\ %{}),
+    to: InvoiceCommands,
     as: :change
 end

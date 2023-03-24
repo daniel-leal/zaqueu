@@ -10,7 +10,10 @@ defmodule ZaqueuWeb.UserLoginLive do
         </h1>
         <p class="mt-2 text-sm leading-6 text-zinc-200">
           Ainda não tem uma conta?
-          <.link navigate={~p"/users/register"} class="font-semibold text-brand hover:underline">
+          <.link
+            navigate={~p"/users/register"}
+            class="font-semibold text-brand hover:underline"
+          >
             Registre-se
           </.link>
         </p>
@@ -42,8 +45,15 @@ defmodule ZaqueuWeb.UserLoginLive do
           />
 
           <:actions>
-            <.input field={@form[:remember_me]} type="checkbox" label="Mantenha-me logado" />
-            <.link href={~p"/users/reset_password"} class="text-sm font-semibold text-gray-300">
+            <.input
+              field={@form[:remember_me]}
+              type="checkbox"
+              label="Mantenha-me logado"
+            />
+            <.link
+              href={~p"/users/reset_password"}
+              class="text-sm font-semibold text-gray-300"
+            >
               Esqueceu sua senha?
             </.link>
           </:actions>

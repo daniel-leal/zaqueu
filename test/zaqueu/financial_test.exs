@@ -50,7 +50,10 @@ defmodule Zaqueu.FinancialTest do
 
     test "update_bank/2 with invalid data returns error changeset" do
       bank = bank_fixture()
-      assert {:error, %Ecto.Changeset{}} = Financial.update_bank(bank, @invalid_attrs)
+
+      assert {:error, %Ecto.Changeset{}} =
+               Financial.update_bank(bank, @invalid_attrs)
+
       assert bank == Financial.get_bank!(bank.id)
     end
 
@@ -96,7 +99,9 @@ defmodule Zaqueu.FinancialTest do
         initial_balance_date: ~D[2023-03-14]
       }
 
-      assert {:ok, %BankAccount{} = bank_account} = Financial.create_bank_account(valid_attrs)
+      assert {:ok, %BankAccount{} = bank_account} =
+               Financial.create_bank_account(valid_attrs)
+
       assert bank_account.account_number == "some account_number"
       assert bank_account.agency == "some agency"
       assert bank_account.initial_balance == Decimal.new("120.5")
@@ -104,7 +109,8 @@ defmodule Zaqueu.FinancialTest do
     end
 
     test "create_bank_account/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Financial.create_bank_account(@invalid_attrs)
+      assert {:error, %Ecto.Changeset{}} =
+               Financial.create_bank_account(@invalid_attrs)
     end
 
     test "update_bank_account/2 with valid data updates the bank_account" do
@@ -138,7 +144,10 @@ defmodule Zaqueu.FinancialTest do
     test "delete_bank_account/1 deletes the bank_account" do
       bank_account = bank_account_fixture()
       assert {:ok, %BankAccount{}} = Financial.delete_bank_account(bank_account)
-      assert_raise Ecto.NoResultsError, fn -> Financial.get_bank_account!(bank_account.id) end
+
+      assert_raise Ecto.NoResultsError, fn ->
+        Financial.get_bank_account!(bank_account.id)
+      end
     end
 
     test "change_bank_account/1 returns a bank_account changeset" do
@@ -172,7 +181,9 @@ defmodule Zaqueu.FinancialTest do
         limit: "120.5"
       }
 
-      assert {:ok, %CreditCard{} = credit_card} = Financial.create_credit_card(valid_attrs)
+      assert {:ok, %CreditCard{} = credit_card} =
+               Financial.create_credit_card(valid_attrs)
+
       assert credit_card.closing_day == 42
       assert credit_card.description == "some description"
       assert credit_card.flag == "some flag"
@@ -180,7 +191,8 @@ defmodule Zaqueu.FinancialTest do
     end
 
     test "create_credit_card/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Financial.create_credit_card(@invalid_attrs)
+      assert {:error, %Ecto.Changeset{}} =
+               Financial.create_credit_card(@invalid_attrs)
     end
 
     test "update_credit_card/2 with valid data updates the credit_card" do
@@ -214,7 +226,10 @@ defmodule Zaqueu.FinancialTest do
     test "delete_credit_card/1 deletes the credit_card" do
       credit_card = credit_card_fixture()
       assert {:ok, %CreditCard{}} = Financial.delete_credit_card(credit_card)
-      assert_raise Ecto.NoResultsError, fn -> Financial.get_credit_card!(credit_card.id) end
+
+      assert_raise Ecto.NoResultsError, fn ->
+        Financial.get_credit_card!(credit_card.id)
+      end
     end
 
     test "change_credit_card/1 returns a credit_card changeset" do

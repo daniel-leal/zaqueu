@@ -207,7 +207,10 @@ defmodule ZaqueuWeb.UserAuth do
       conn
     else
       conn
-      |> put_flash(:error, "Você precisa estar logado para acessar esta página.")
+      |> put_flash(
+        :error,
+        "Você precisa estar logado para acessar esta página."
+      )
       |> maybe_store_return_to()
       |> redirect(to: ~p"/users/log_in")
       |> halt()
@@ -217,7 +220,10 @@ defmodule ZaqueuWeb.UserAuth do
   defp put_token_in_session(conn, token) do
     conn
     |> put_session(:user_token, token)
-    |> put_session(:live_socket_id, "users_sessions:#{Base.url_encode64(token)}")
+    |> put_session(
+      :live_socket_id,
+      "users_sessions:#{Base.url_encode64(token)}"
+    )
   end
 
   defp maybe_store_return_to(%{method: "GET"} = conn) do

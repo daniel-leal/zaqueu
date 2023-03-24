@@ -2,15 +2,22 @@
   <.header>
     <%= @bank_account.bank %>
     <:actions>
-      <.link patch={~p"/bank_accounts/#{@bank_account}/show/edit"} phx-click={JS.push_focus()}>
+      <.link
+        patch={~p"/bank_accounts/#{@bank_account}/show/edit"}
+        phx-click={JS.push_focus()}
+      >
         <.button>Editar</.button>
       </.link>
     </:actions>
   </.header>
 
   <.list>
-    <:item title="Saldo inicial"><%= money(@bank_account.initial_balance) %></:item>
-    <:item title="Data do saldo"><%= local_date(@bank_account.initial_balance_date) %></:item>
+    <:item title="Saldo inicial">
+      <%= money(@bank_account.initial_balance) %>
+    </:item>
+    <:item title="Data do saldo">
+      <%= local_date(@bank_account.initial_balance_date) %>
+    </:item>
     <:item title="Agência"><%= @bank_account.agency %></:item>
     <:item title="Conta"><%= @bank_account.account_number %></:item>
   </.list>

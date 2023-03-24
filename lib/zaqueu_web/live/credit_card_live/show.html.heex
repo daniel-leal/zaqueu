@@ -1,4 +1,4 @@
-<div class="bg-white rounded-md p-5">
+<div class="bg-gray rounded-md p-5">
   <.header>
     <div class="flex flex-col">
       <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">
@@ -55,31 +55,77 @@
           </svg>
           Dia fechamento: <%= @credit_card.closing_day %>
         </div>
+        <div class="mt-2 flex items-center text-sm text-gray-500">
+          <svg
+            class="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="w-6 h-6"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M21 12a2.25 2.25 0 00-2.25-2.25H15a3 3 0 11-6 0H5.25A2.25 2.25 0 003 12m18 0v6a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 9m18 0V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v3"
+            />
+          </svg>
+          Total: <%= money(@total) %>
+        </div>
       </div>
     </div>
-
-    <:actions>
-      <.link patch={~p"/credit_cards/#{@credit_card}/show/edit"} phx-click={JS.push_focus()}>
-        <.button>Editar</.button>
-      </.link>
-    </:actions>
   </.header>
+
+  <div class="pt-8">
+    <.table
+      id="invoices"
+      rows={@invoices}
+      row_click={
+        fn invoice ->
+          JS.navigate(
+            ~p"/credit_cards/#{@credit_card}/invoices/#{invoice}/edit"
+          )
+        end
+      }
+    >
+      <:col :let={invoice} label="Data de Início">
+        <%= local_date(invoice.start_date) %>
+      </:col>
+      <:col :let={invoice} label="Data de Fechamento">
+        <%= local_date(invoice.closing_date) %>
+      </:col>
+      <:col :let={invoice} label="Data de Vencimento">
+        <%= local_date(invoice.expiry_date) %>
+      </:col>
+      <:col :let={invoice} label="Situação">
+        <%= invoice.payment_status %>
+      </:col>
+      <:col :let={invoice} label="Valor" color="text-red-500">
+        <%= money(invoice.amount) %>
+      </:col>
+      <:action :let={invoice}>
+        <.link patch={~p"/credit_cards/#{@credit_card}"}>Transações</.link>
+      </:action>
+    </.table>
+  </div>
 
   <.back navigate={~p"/credit_cards"}>Voltar</.back>
 </div>
 
 <.modal
   :if={@live_action == :edit}
-  id="credit_card-modal"
+  id="invoice-modal"
   show
   on_cancel={JS.patch(~p"/credit_cards/#{@credit_card}")}
 >
   <.live_component
-    module={ZaqueuWeb.CreditCardLive.FormComponent}
+    module={ZaqueuWeb.CreditCardLive.FormInvoiceComponent}
     id={@credit_card.id}
     title={@page_title}
     action={@live_action}
-    credit_card={@credit_card}
+    inovoice_id={@invoice.id}
+    invoice={@invoice}
     patch={~p"/credit_cards/#{@credit_card}"}
   />
 </.modal>

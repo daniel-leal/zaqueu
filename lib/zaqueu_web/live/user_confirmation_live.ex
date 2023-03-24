@@ -18,7 +18,9 @@ defmodule ZaqueuWeb.UserConfirmationLive do
         >
           <.input field={@form[:token]} type="hidden" />
           <:actions>
-            <.button phx-disable-with="Confirming..." class="w-full">Confirmar minha conta</.button>
+            <.button phx-disable-with="Confirming..." class="w-full">
+              Confirmar minha conta
+            </.button>
           </:actions>
         </.simple_form>
 
@@ -57,13 +59,17 @@ defmodule ZaqueuWeb.UserConfirmationLive do
         # by some automation or by the user themselves, so we redirect without
         # a warning message.
         case socket.assigns do
-          %{current_user: %{confirmed_at: confirmed_at}} when not is_nil(confirmed_at) ->
+          %{current_user: %{confirmed_at: confirmed_at}}
+          when not is_nil(confirmed_at) ->
             {:noreply, redirect(socket, to: ~p"/")}
 
           %{} ->
             {:noreply,
              socket
-             |> put_flash(:error, "O link de confirmação expirou, ou é inválido.")
+             |> put_flash(
+               :error,
+               "O link de confirmação expirou, ou é inválido."
+             )
              |> redirect(to: ~p"/")}
         end
     end

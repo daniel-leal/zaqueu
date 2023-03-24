@@ -97,16 +97,16 @@ msgstr[1] ""
 
 ## From Ecto.Changeset.validate_number/3
 msgid "must be less than %{number}"
-msgstr ""
+msgstr "Deve ser menor que %{number}"
 
 msgid "must be greater than %{number}"
-msgstr ""
+msgstr "Deve ser maior que %{number}"
 
 msgid "must be less than or equal to %{number}"
 msgstr ""
 
 msgid "must be greater than or equal to %{number}"
-msgstr ""
+msgstr "Deve ser maior ou igual a %{number}"
 
 msgid "must be equal to %{number}"
-msgstr ""
+msgstr "Deve ser igual a %{number}"

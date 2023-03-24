@@ -20,7 +20,8 @@ config :zaqueu, Zaqueu.Repo,
 # you can enable the server option below.
 config :zaqueu, ZaqueuWeb.Endpoint,
   http: [ip: {127, 0, 0, 1}, port: 4002],
-  secret_key_base: "hlwkSsN9ut4LXVmYv9FABjDb9gCtwnhxs0PHljMwScFfifPO+Erf0rFMCLoHW6Et",
+  secret_key_base:
+    "hlwkSsN9ut4LXVmYv9FABjDb9gCtwnhxs0PHljMwScFfifPO+Erf0rFMCLoHW6Et",
   server: false
 
 # In test we don't send emails.

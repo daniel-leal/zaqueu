@@ -28,7 +28,9 @@ defmodule ZaqueuWeb.UserRegistrationLiveTest do
       result =
         lv
         |> element("#registration_form")
-        |> render_change(user: %{"email" => "with spaces", "password" => "too short"})
+        |> render_change(
+          user: %{"email" => "with spaces", "password" => "too short"}
+        )
 
       assert result =~ "Register"
       assert result =~ "must have the @ sign and no spaces"
@@ -41,7 +43,10 @@ defmodule ZaqueuWeb.UserRegistrationLiveTest do
       {:ok, lv, _html} = live(conn, ~p"/users/register")
 
       email = unique_user_email()
-      form = form(lv, "#registration_form", user: valid_user_attributes(email: email))
+
+      form =
+        form(lv, "#registration_form", user: valid_user_attributes(email: email))
+
       render_submit(form)
       conn = follow_trigger_action(form, conn)
 
@@ -72,7 +77,9 @@ defmodule ZaqueuWeb.UserRegistrationLiveTest do
   end
 
   describe "registration navigation" do
-    test "redirects to login page when the Log in button is clicked", %{conn: conn} do
+    test "redirects to login page when the Log in button is clicked", %{
+      conn: conn
+    } do
       {:ok, lv, _html} = live(conn, ~p"/users/register")
 
       {:ok, _login_live, login_html} =

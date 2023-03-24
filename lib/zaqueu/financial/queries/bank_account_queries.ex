@@ -1,9 +1,9 @@
 defmodule Zaqueu.Financial.Queries.BankAccountQueries do
   import Ecto.Query, warn: false
 
-  alias Zaqueu.Repo
-  alias Zaqueu.Financial.Schemas.BankAccount
   alias Zaqueu.Financial.Schemas.Bank
+  alias Zaqueu.Financial.Schemas.BankAccount
+  alias Zaqueu.Repo
 
   def list(user_id) do
     bank_names = from(b in Bank, select: b.name, order_by: :name)

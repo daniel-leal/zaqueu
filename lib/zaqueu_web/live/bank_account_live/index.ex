@@ -42,7 +42,10 @@ defmodule ZaqueuWeb.BankAccountLive.Index do
   end
 
   @impl true
-  def handle_info({ZaqueuWeb.BankAccountLive.FormComponent, {:saved, bank_account}}, socket) do
+  def handle_info(
+        {ZaqueuWeb.BankAccountLive.FormComponent, {:saved, bank_account}},
+        socket
+      ) do
     {:noreply, stream_insert(socket, :bank_accounts, bank_account)}
   end
 

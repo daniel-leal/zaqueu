@@ -1,6 +1,6 @@
 defmodule Zaqueu.Financial.Commands.BankAccountCommands do
-  alias Zaqueu.Repo
   alias Zaqueu.Financial.Schemas.BankAccount
+  alias Zaqueu.Repo
 
   def create(attrs \\ %{}) do
     %BankAccount{}

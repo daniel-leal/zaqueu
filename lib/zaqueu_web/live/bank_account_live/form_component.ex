@@ -18,6 +18,7 @@ defmodule ZaqueuWeb.BankAccountLive.FormComponent do
         phx-change="validate"
         phx-submit="save"
       >
+        <.input field={@form[:user_id]} type="hidden" value={@user_id} />
         <.input
           field={@form[:bank_id]}
           type="select"
@@ -40,7 +41,7 @@ defmodule ZaqueuWeb.BankAccountLive.FormComponent do
           label="Data do saldo"
           value={
             if @form[:initial_balance_date].value == nil,
-              do: Timex.today(),
+              do: Timex.today("America/Sao_Paulo"),
               else: @form[:initial_balance_date].value
           }
         />
@@ -77,7 +78,10 @@ defmodule ZaqueuWeb.BankAccountLive.FormComponent do
   end
 
   defp save_bank_account(socket, :edit, bank_account_params) do
-    case Financial.update_bank_account(socket.assigns.bank_account, bank_account_params) do
+    case Financial.update_bank_account(
+           socket.assigns.bank_account,
+           bank_account_params
+         ) do
       {:ok, bank_account} ->
         notify_parent({:saved, bank_account})
 
@@ -92,8 +96,6 @@ defmodule ZaqueuWeb.BankAccountLive.FormComponent do
   end
 
   defp save_bank_account(socket, :new, bank_account_params) do
-    bank_account_params = Map.put(bank_account_params, "user_id", socket.assigns.user_id)
-
     case Financial.create_bank_account(bank_account_params) do
       {:ok, bank_account} ->
         notify_parent({:saved, bank_account})
