@@ -23,9 +23,11 @@ config :zaqueu, ZaqueuWeb.Endpoint,
   check_origin: false,
   code_reloader: true,
   debug_errors: true,
-  secret_key_base: "UaeQPT06bSALniIDrONoMaiQlGsfmA/kqdTnISe6GYVtHwEZ215/KMl57X3+PnRR",
+  secret_key_base:
+    "UaeQPT06bSALniIDrONoMaiQlGsfmA/kqdTnISe6GYVtHwEZ215/KMl57X3+PnRR",
   watchers: [
-    esbuild: {Esbuild, :install_and_run, [:default, ~w(--sourcemap=inline --watch)]},
+    esbuild:
+      {Esbuild, :install_and_run, [:default, ~w(--sourcemap=inline --watch)]},
     tailwind: {Tailwind, :install_and_run, [:default, ~w(--watch)]}
   ]
 

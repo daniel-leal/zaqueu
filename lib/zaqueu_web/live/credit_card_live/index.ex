@@ -4,11 +4,14 @@ defmodule ZaqueuWeb.CreditCardLive.Index do
   import ZaqueuWeb.DisplayHelpers, only: [money: 1]
 
   alias Zaqueu.Financial
-  alias Zaqueu.Financial.CreditCard
+  alias Zaqueu.Financial.Schemas.CreditCard
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, stream(socket, :credit_cards, Financial.list_credit_cards())}
+    current_user = socket.assigns.current_user
+
+    {:ok,
+     stream(socket, :credit_cards, Financial.list_credit_cards(current_user.id))}
   end
 
   @impl true
@@ -35,7 +38,10 @@ defmodule ZaqueuWeb.CreditCardLive.Index do
   end
 
   @impl true
-  def handle_info({ZaqueuWeb.CreditCardLive.FormComponent, {:saved, credit_card}}, socket) do
+  def handle_info(
+        {ZaqueuWeb.CreditCardLive.FormComponent, {:saved, credit_card}},
+        socket
+      ) do
     {:noreply, stream_insert(socket, :credit_cards, credit_card)}
   end
 

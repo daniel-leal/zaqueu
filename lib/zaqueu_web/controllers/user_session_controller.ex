@@ -26,7 +26,8 @@ defmodule ZaqueuWeb.UserSessionController do
       |> put_flash(:info, info)
       |> UserAuth.log_in_user(user, user_params)
     else
-      # In order to prevent user enumeration attacks, don't disclose whether the email is registered.
+      # In order to prevent user enumeration attacks, don't disclose whether the
+      # email is registered.
       conn
       |> put_flash(:error, "E-mail ou senha inválidos")
       |> put_flash(:email, String.slice(email, 0, 160))

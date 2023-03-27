@@ -49,7 +49,11 @@ defmodule ZaqueuWeb.UserConfirmationInstructionsLive do
     {:ok, assign(socket, form: to_form(%{}, as: "user"))}
   end
 
-  def handle_event("send_instructions", %{"user" => %{"email" => email}}, socket) do
+  def handle_event(
+        "send_instructions",
+        %{"user" => %{"email" => email}},
+        socket
+      ) do
     if user = Identity.get_user_by_email(email) do
       Identity.deliver_user_confirmation_instructions(
         user,

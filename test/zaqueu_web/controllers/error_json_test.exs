@@ -2,7 +2,9 @@ defmodule ZaqueuWeb.ErrorJSONTest do
   use ZaqueuWeb.ConnCase, async: true
 
   test "renders 404" do
-    assert ZaqueuWeb.ErrorJSON.render("404.json", %{}) == %{errors: %{detail: "Not Found"}}
+    assert ZaqueuWeb.ErrorJSON.render("404.json", %{}) == %{
+             errors: %{detail: "Not Found"}
+           }
   end
 
   test "renders 500" do

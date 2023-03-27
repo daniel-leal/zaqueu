@@ -4,7 +4,7 @@ defmodule ZaqueuWeb.BankAccountLive.Index do
   import ZaqueuWeb.DisplayHelpers, only: [local_date: 1, money: 1]
 
   alias Zaqueu.Financial
-  alias Zaqueu.Financial.BankAccount
+  alias Zaqueu.Financial.Schemas.BankAccount
 
   @impl true
   def mount(_params, _session, socket) do
@@ -42,7 +42,10 @@ defmodule ZaqueuWeb.BankAccountLive.Index do
   end
 
   @impl true
-  def handle_info({ZaqueuWeb.BankAccountLive.FormComponent, {:saved, bank_account}}, socket) do
+  def handle_info(
+        {ZaqueuWeb.BankAccountLive.FormComponent, {:saved, bank_account}},
+        socket
+      ) do
     {:noreply, stream_insert(socket, :bank_accounts, bank_account)}
   end
 

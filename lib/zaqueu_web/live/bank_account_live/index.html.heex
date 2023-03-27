@@ -11,7 +11,11 @@
 <.table
   id="bank_accounts"
   rows={@streams.bank_accounts}
-  row_click={fn {_id, bank_account} -> JS.navigate(~p"/bank_accounts/#{bank_account}") end}
+  row_click={
+    fn {_id, bank_account} ->
+      JS.navigate(~p"/bank_accounts/#{bank_account}")
+    end
+  }
 >
   <:col :let={{_id, bank_account}} label="Banco">
     <%= bank_account.bank %>
@@ -31,7 +35,9 @@
   <:action :let={{id, bank_account}}>
     <.link
       class="text-red-400"
-      phx-click={JS.push("delete", value: %{id: bank_account.id}) |> hide("##{id}")}
+      phx-click={
+        JS.push("delete", value: %{id: bank_account.id}) |> hide("##{id}")
+      }
       data-confirm="Tem certeza?"
     >
       Deletar

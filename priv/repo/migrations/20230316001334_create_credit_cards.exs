@@ -6,6 +6,7 @@ defmodule Zaqueu.Repo.Migrations.CreateCreditCards do
       add(:id, :binary_id, primary_key: true)
       add(:description, :string)
       add(:flag, :string)
+      add(:expiry_day, :integer)
       add(:closing_day, :integer)
       add(:limit, :decimal, precision: 20, scale: 2)
       add(:user_id, references(:users, on_delete: :nothing, type: :binary_id))

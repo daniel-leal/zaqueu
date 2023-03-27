@@ -13,7 +13,10 @@ defmodule ZaqueuWeb.UserRegistrationLive do
         </h1>
         <p class="text-center mt-2 text-sm leading-6 text-zinc-200">
           Já tem uma conta? Faça
-          <.link navigate={~p"/users/log_in"} class="font-semibold text-brand hover:underline">
+          <.link
+            navigate={~p"/users/log_in"}
+            class="font-semibold text-brand hover:underline"
+          >
             Login
           </.link>
         </p>
@@ -52,7 +55,9 @@ defmodule ZaqueuWeb.UserRegistrationLive do
           />
 
           <:actions>
-            <.button phx-disable-with="Criando conta..." class="w-full">Crie sua conta</.button>
+            <.button phx-disable-with="Criando conta..." class="w-full">
+              Crie sua conta
+            </.button>
           </:actions>
         </.simple_form>
       </div>
@@ -81,10 +86,13 @@ defmodule ZaqueuWeb.UserRegistrationLive do
           )
 
         changeset = Identity.change_user_registration(user)
-        {:noreply, socket |> assign(trigger_submit: true) |> assign_form(changeset)}
+
+        {:noreply,
+         socket |> assign(trigger_submit: true) |> assign_form(changeset)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        {:noreply, socket |> assign(check_errors: true) |> assign_form(changeset)}
+        {:noreply,
+         socket |> assign(check_errors: true) |> assign_form(changeset)}
     end
   end
 

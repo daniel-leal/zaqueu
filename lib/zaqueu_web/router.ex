@@ -49,7 +49,12 @@ defmodule ZaqueuWeb.Router do
       on_mount: [{ZaqueuWeb.UserAuth, :ensure_authenticated}] do
       live("/", BankAccountLive.Index, :index)
       live("/users/settings", UserSettingsLive, :edit)
-      live("/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email)
+
+      live(
+        "/users/settings/confirm_email/:token",
+        UserSettingsLive,
+        :confirm_email
+      )
 
       live("/bank_accounts", BankAccountLive.Index, :index)
       live("/bank_accounts/new", BankAccountLive.Index, :new)
@@ -62,6 +67,12 @@ defmodule ZaqueuWeb.Router do
       live("/credit_cards/:id/edit", CreditCardLive.Index, :edit)
       live("/credit_cards/:id", CreditCardLive.Show, :show)
       live("/credit_cards/:id/show/edit", CreditCardLive.Show, :edit)
+
+      live(
+        "/credit_cards/:id/invoices/:invoice_id/edit",
+        CreditCardLive.Show,
+        :edit
+      )
     end
   end
 
