@@ -104,7 +104,7 @@
       <:col :let={invoice} label="Valor" color="text-red-500">
         <%= money(invoice.amount) %>
       </:col>
-      <:action :let={invoice}>
+      <:action :let={_}>
         <.link patch={~p"/credit_cards/#{@credit_card}"}>Transações</.link>
       </:action>
     </.table>

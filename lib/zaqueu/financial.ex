@@ -229,13 +229,61 @@ defmodule Zaqueu.Financial do
   """
   defdelegate list_invoices(credit_card_id), to: InvoiceQueries, as: :list
 
+  @doc """
+  Gets a single invoice.
+
+  Raises `Ecto.NoResultsError` if the Invoice does not exist.
+
+  ## Examples
+
+      iex> get_invoice!(123)
+      %Invoice{}
+
+      iex> get_invoice!(456)
+      ** (Ecto.NoResultsError)
+
+  """
   defdelegate get_invoice!(id), to: InvoiceQueries, as: :get_by_id!
 
+  @doc """
+  Returns a sum of invoices by credit_card_id.
+
+  ## Examples
+
+      iex> get_sum_by_credit_card(credit_card_id)
+      Decimal.new(3254.15)
+
+  """
   defdelegate get_sum_by_credit_card(credit_card_id),
     to: InvoiceQueries,
     as: :sum_by_credit_card
 
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking invoice changes.
+
+  ## Examples
+
+      iex> change_invoice(invoice)
+      %Ecto.Changeset{data: %Invoice{}}
+
+  """
   defdelegate change_invoice(invoice, attrs \\ %{}),
     to: InvoiceCommands,
     as: :change
+
+  @doc """
+  Updates a invoice.
+
+  ## Examples
+
+      iex> update_invoice(invoice, %{field: new_value})
+      {:ok, %Invoice{}}
+
+      iex> update_invoice(invoice, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  defdelegate update_invoice(invoice, attrs \\ %{}),
+    to: InvoiceCommands,
+    as: :update
 end
