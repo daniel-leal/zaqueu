@@ -2,6 +2,7 @@ defmodule ZaqueuWeb.CreditCardLive.FormInvoiceComponent do
   use ZaqueuWeb, :live_component
 
   alias Zaqueu.Financial
+  alias Zaqueu.Financial.Schemas.Invoice
 
   @impl true
   def render(assigns) do
@@ -19,6 +20,16 @@ defmodule ZaqueuWeb.CreditCardLive.FormInvoiceComponent do
         phx-submit="save"
       >
         <.input field={@form[:expiry_date]} type="date" label="Data de Vencimento" />
+
+        <%= if Invoice.payable?(@invoice) do %>
+          <.input
+            field={@form[:is_paid]}
+            type="select"
+            label="Pago?"
+            options={[{"Sim", true}, {"Não", false}]}
+          />
+        <% end %>
+
         <:actions>
           <.button phx-disable-with="Salvando...">Salvar</.button>
         </:actions>
@@ -47,49 +58,25 @@ defmodule ZaqueuWeb.CreditCardLive.FormInvoiceComponent do
     {:noreply, assign_form(socket, changeset)}
   end
 
-  def handle_event("save", %{"credit_card" => credit_card_params}, socket) do
-    save_credit_card(socket, socket.assigns.action, credit_card_params)
+  def handle_event("save", %{"invoice" => invoice_params}, socket) do
+    save_invoice(socket, socket.assigns.action, invoice_params)
   end
 
-  defp save_credit_card(socket, :edit, credit_card_params) do
-    case Financial.update_credit_card(
-           socket.assigns.credit_card,
-           credit_card_params
+  defp save_invoice(socket, :edit, invoice_params) do
+    case Financial.update_invoice(
+           socket.assigns.invoice,
+           invoice_params
          ) do
-      {:ok, credit_card} ->
-        notify_parent({:saved, credit_card})
+      {:ok, invoice} ->
+        notify_parent({:saved, invoice})
 
         {:noreply,
          socket
-         |> put_flash(:info, "Cartão de crédito atualizado")
+         |> put_flash(:info, "Fatura atualizada com sucesso!")
          |> push_patch(to: socket.assigns.patch)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign_form(socket, changeset)}
-    end
-  end
-
-  defp save_credit_card(socket, :new, credit_card_params) do
-    case Financial.create_credit_card(credit_card_params) do
-      {:ok, %{credit_card: credit_card}} ->
-        notify_parent({:saved, credit_card})
-
-        {:noreply,
-         socket
-         |> put_flash(:info, "Cartão de crédito incluído")
-         |> push_patch(to: socket.assigns.patch)}
-
-      {:error, :credit_card, %Ecto.Changeset{} = changeset, _} ->
-        {:noreply, assign_form(socket, changeset)}
-
-      {:error, :invoice, _, _} ->
-        {:noreply,
-         socket
-         |> put_flash(
-           :error,
-           "Ocorreu um erro interno. Entre em contato com o administrador!"
-         )
-         |> push_patch(to: socket.assigns.patch)}
     end
   end
 

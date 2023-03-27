@@ -2,6 +2,16 @@ defmodule Zaqueu.Financial.Schemas.Invoice do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias Zaqueu.Identity.User
+  alias Zaqueu.Financial.Schemas.CreditCard
+
+  @status %{
+    closed: "Fechado",
+    late: "Atrasado",
+    open: "Aberto",
+    paid: "Pago"
+  }
+
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
   schema "invoices" do
@@ -15,6 +25,9 @@ defmodule Zaqueu.Financial.Schemas.Invoice do
 
     field(:payment_status, :string, virtual: true)
     field(:is_current, :boolean, virtual: true)
+
+    belongs_to(:credit_card, CreditCard, define_field: false)
+    belongs_to(:user, User, define_field: false)
 
     timestamps()
   end
@@ -43,10 +56,9 @@ defmodule Zaqueu.Financial.Schemas.Invoice do
 
   def update_changeset(invoice, attrs) do
     invoice
-    |> cast(attrs, [:expiry_date, :is_paid])
+    |> cast(attrs, [:expiry_date, :is_paid, :amount])
     |> validate_required([:expiry_date, :is_paid])
     |> validate_expiry_date()
-    |> validate_payment()
   end
 
   defp is_current?(%__MODULE__{
@@ -55,33 +67,35 @@ defmodule Zaqueu.Financial.Schemas.Invoice do
        }) do
     today = Timex.today()
     invoice_period = Timex.Interval.new(from: start_date, until: closing_date)
-
     today in invoice_period
   end
 
-  defp payment_status(
-         %__MODULE__{
-           expiry_date: expiry_date,
-           closing_date: closing_date,
-           is_paid: is_paid
-         } = invoice
-       ) do
+  defp payment_status(%__MODULE__{
+         expiry_date: _expiry_date,
+         closing_date: _closing_date,
+         is_paid: true
+       }) do
+    @status.paid
+  end
+
+  defp payment_status(%__MODULE__{
+         expiry_date: expiry_date,
+         closing_date: closing_date,
+         is_paid: false
+       }) do
     today = Timex.today()
     is_late = Timex.after?(today, expiry_date)
     is_closed = Timex.after?(today, closing_date)
 
-    case {is_paid, is_late, is_closed} do
-      {true, _, _} ->
-        "Pago"
+    cond do
+      is_late && is_closed ->
+        @status.late
 
-      {false, true, true} ->
-        "Atrasada"
+      is_closed ->
+        @status.closed
 
-      {false, false, true} ->
-        "Fechada"
-
-      _ ->
-        "Em aberto"
+      true ->
+        @status.open
     end
   end
 
@@ -107,10 +121,7 @@ defmodule Zaqueu.Financial.Schemas.Invoice do
     end)
   end
 
-  # TODO
-  defp validate_payment(changeset) do
-    validate_change(changeset, :is_paid, fn :is_paid, is_paid ->
-      []
-    end)
+  def payable?(%__MODULE__{} = invoice) do
+    payment_status(invoice) != @status.open
   end
 end

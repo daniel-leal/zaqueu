@@ -2,6 +2,8 @@ defmodule Zaqueu.Financial.Schemas.CreditCard do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias Zaqueu.Identity.User
+
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
   schema "credit_cards" do
@@ -11,6 +13,8 @@ defmodule Zaqueu.Financial.Schemas.CreditCard do
     field(:flag, :string)
     field(:limit, :decimal)
     field(:user_id, :binary_id)
+
+    belongs_to(:user, User, define_field: false)
 
     timestamps()
   end

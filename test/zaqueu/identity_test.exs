@@ -69,7 +69,7 @@ defmodule Zaqueu.IdentityTest do
         Identity.register_user(%{email: "not valid", password: "not valid"})
 
       assert %{
-               email: ["must have the @ sign and no spaces"],
+               email: ["Necessário ter o @ e não pode ter espaços"],
                password: ["should be at least 12 character(s)"]
              } = errors_on(changeset)
     end
@@ -149,7 +149,7 @@ defmodule Zaqueu.IdentityTest do
       {:error, changeset} =
         Identity.apply_user_email(user, valid_user_password(), %{})
 
-      assert %{email: ["did not change"]} = errors_on(changeset)
+      assert %{email: ["Não alterou!"]} = errors_on(changeset)
     end
 
     test "validates email", %{user: user} do
@@ -158,7 +158,7 @@ defmodule Zaqueu.IdentityTest do
           email: "not valid"
         })
 
-      assert %{email: ["must have the @ sign and no spaces"]} =
+      assert %{email: ["Necessário ter o @ e não pode ter espaços"]} =
                errors_on(changeset)
     end
 
@@ -187,7 +187,7 @@ defmodule Zaqueu.IdentityTest do
       {:error, changeset} =
         Identity.apply_user_email(user, "invalid", %{email: unique_user_email()})
 
-      assert %{current_password: ["is not valid"]} = errors_on(changeset)
+      assert %{current_password: ["Inválido"]} = errors_on(changeset)
     end
 
     test "applies the email without persisting it", %{user: user} do
@@ -321,7 +321,7 @@ defmodule Zaqueu.IdentityTest do
 
       assert %{
                password: ["should be at least 12 character(s)"],
-               password_confirmation: ["does not match password"]
+               password_confirmation: ["Senhas não combinam"]
              } = errors_on(changeset)
     end
 
@@ -342,7 +342,7 @@ defmodule Zaqueu.IdentityTest do
           password: valid_user_password()
         })
 
-      assert %{current_password: ["is not valid"]} = errors_on(changeset)
+      assert %{current_password: ["Inválido"]} = errors_on(changeset)
     end
 
     test "updates the password", %{user: user} do
@@ -553,7 +553,7 @@ defmodule Zaqueu.IdentityTest do
 
       assert %{
                password: ["should be at least 12 character(s)"],
-               password_confirmation: ["does not match password"]
+               password_confirmation: ["Senhas não combinam"]
              } = errors_on(changeset)
     end
 

@@ -25,6 +25,7 @@ defmodule Zaqueu.DataCase do
       import Ecto.Changeset
       import Ecto.Query
       import Zaqueu.DataCase
+      import Support.Factory
     end
   end
 

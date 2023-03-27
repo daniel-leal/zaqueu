@@ -3,9 +3,9 @@ defmodule ZaqueuWeb.UserLoginLive do
 
   def render(assigns) do
     ~H"""
-    <div class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-slate-800 dark:border-gray-700">
+    <div class="w-full rounded-lg shadow border md:mt-0 sm:max-w-md xl:p-0 bg-slate-800 border-gray-700">
       <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
-        <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
+        <h1 class="text-xl font-bold leading-tight tracking-tight md:text-2xl text-white">
           Acesse sua Conta
         </h1>
         <p class="mt-2 text-sm leading-6 text-zinc-200">
@@ -29,7 +29,7 @@ defmodule ZaqueuWeb.UserLoginLive do
             type="email"
             label="Email"
             label_color="text-gray-300"
-            class="border border-gray-300 rounded text-gray-50 bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800"
+            class="border rounded text-gray-50 focus:ring-3 focus:ring-primary-300 bg-gray-700 border-gray-600 focus:ring-primary-600 ring-offset-gray-800"
             placeholder="email@example.com"
             required
           />
@@ -39,7 +39,7 @@ defmodule ZaqueuWeb.UserLoginLive do
             type="password"
             label="Senha"
             label_color="text-gray-300"
-            class="border border-gray-300 rounded text-gray-50 bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800"
+            class="border rounded text-gray-50 focus:ring-3 focus:ring-primary-300 bg-gray-700 border-gray-600 focus:ring-primary-600 ring-offset-gray-800"
             placeholder="••••••••••"
             required
           />
