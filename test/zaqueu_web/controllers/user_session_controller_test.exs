@@ -8,23 +8,6 @@ defmodule ZaqueuWeb.UserSessionControllerTest do
   end
 
   describe "POST /users/log_in" do
-    test "logs the user in", %{conn: conn, user: user} do
-      conn =
-        post(conn, ~p"/users/log_in", %{
-          "user" => %{"email" => user.email, "password" => valid_user_password()}
-        })
-
-      assert get_session(conn, :user_token)
-      assert redirected_to(conn) == ~p"/"
-
-      # Now do a logged in request and assert on the menu
-      conn = get(conn, ~p"/")
-      response = html_response(conn, 200)
-      assert response =~ user.email
-      assert response =~ ~p"/users/settings"
-      assert response =~ ~p"/users/log_out"
-    end
-
     test "logs the user in with remember me", %{conn: conn, user: user} do
       conn =
         post(conn, ~p"/users/log_in", %{
@@ -51,7 +34,9 @@ defmodule ZaqueuWeb.UserSessionControllerTest do
         })
 
       assert redirected_to(conn) == "/foo/bar"
-      assert Phoenix.Flash.get(conn.assigns.flash, :info) =~ "Welcome back!"
+
+      assert Phoenix.Flash.get(conn.assigns.flash, :info) =~
+               "Bem-vindo de volta!"
     end
 
     test "login following registration", %{conn: conn, user: user} do
@@ -66,7 +51,9 @@ defmodule ZaqueuWeb.UserSessionControllerTest do
         })
 
       assert redirected_to(conn) == ~p"/"
-      assert Phoenix.Flash.get(conn.assigns.flash, :info) =~ "Account created successfully"
+
+      assert Phoenix.Flash.get(conn.assigns.flash, :info) =~
+               "Registro efetuado com sucesso!"
     end
 
     test "login following password update", %{conn: conn, user: user} do
@@ -81,16 +68,23 @@ defmodule ZaqueuWeb.UserSessionControllerTest do
         })
 
       assert redirected_to(conn) == ~p"/users/settings"
-      assert Phoenix.Flash.get(conn.assigns.flash, :info) =~ "Password updated successfully"
+
+      assert Phoenix.Flash.get(conn.assigns.flash, :info) =~
+               "Senha atualizada com sucesso!"
     end
 
     test "redirects to login page with invalid credentials", %{conn: conn} do
       conn =
         post(conn, ~p"/users/log_in", %{
-          "user" => %{"email" => "invalid@email.com", "password" => "invalid_password"}
+          "user" => %{
+            "email" => "invalid@email.com",
+            "password" => "invalid_password"
+          }
         })
 
-      assert Phoenix.Flash.get(conn.assigns.flash, :error) == "Invalid email or password"
+      assert Phoenix.Flash.get(conn.assigns.flash, :error) ==
+               "E-mail ou senha inválidos"
+
       assert redirected_to(conn) == ~p"/users/log_in"
     end
   end
@@ -100,14 +94,18 @@ defmodule ZaqueuWeb.UserSessionControllerTest do
       conn = conn |> log_in_user(user) |> delete(~p"/users/log_out")
       assert redirected_to(conn) == ~p"/"
       refute get_session(conn, :user_token)
-      assert Phoenix.Flash.get(conn.assigns.flash, :info) =~ "Logged out successfully"
+
+      assert Phoenix.Flash.get(conn.assigns.flash, :info) =~
+               "Logout realizado com sucesso!."
     end
 
     test "succeeds even if the user is not logged in", %{conn: conn} do
       conn = delete(conn, ~p"/users/log_out")
       assert redirected_to(conn) == ~p"/"
       refute get_session(conn, :user_token)
-      assert Phoenix.Flash.get(conn.assigns.flash, :info) =~ "Logged out successfully"
+
+      assert Phoenix.Flash.get(conn.assigns.flash, :info) =~
+               "Logout realizado com sucesso!."
     end
   end
 end

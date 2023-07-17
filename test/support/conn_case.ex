@@ -28,6 +28,7 @@ defmodule ZaqueuWeb.ConnCase do
       import Plug.Conn
       import Phoenix.ConnTest
       import ZaqueuWeb.ConnCase
+      import Support.Factory
     end
   end
 

@@ -19,7 +19,10 @@ defmodule Zaqueu.IdentityTest do
 
   describe "get_user_by_email_and_password/2" do
     test "does not return the user if the email does not exist" do
-      refute Identity.get_user_by_email_and_password("unknown@example.com", "hello world!")
+      refute Identity.get_user_by_email_and_password(
+               "unknown@example.com",
+               "hello world!"
+             )
     end
 
     test "does not return the user if the password is not valid" do
@@ -31,7 +34,10 @@ defmodule Zaqueu.IdentityTest do
       %{id: id} = user = user_fixture()
 
       assert %User{id: ^id} =
-               Identity.get_user_by_email_and_password(user.email, valid_user_password())
+               Identity.get_user_by_email_and_password(
+                 user.email,
+                 valid_user_password()
+               )
     end
   end
 
@@ -59,18 +65,23 @@ defmodule Zaqueu.IdentityTest do
     end
 
     test "validates email and password when given" do
-      {:error, changeset} = Identity.register_user(%{email: "not valid", password: "not valid"})
+      {:error, changeset} =
+        Identity.register_user(%{email: "not valid", password: "not valid"})
 
       assert %{
-               email: ["must have the @ sign and no spaces"],
+               email: ["Necessário ter o @ e não pode ter espaços"],
                password: ["should be at least 12 character(s)"]
              } = errors_on(changeset)
     end
 
     test "validates maximum values for email and password for security" do
       too_long = String.duplicate("db", 100)
-      {:error, changeset} = Identity.register_user(%{email: too_long, password: too_long})
+
+      {:error, changeset} =
+        Identity.register_user(%{email: too_long, password: too_long})
+
       assert "should be at most 160 character(s)" in errors_on(changeset).email
+
       assert "should be at most 72 character(s)" in errors_on(changeset).password
     end
 
@@ -79,8 +90,11 @@ defmodule Zaqueu.IdentityTest do
       {:error, changeset} = Identity.register_user(%{email: email})
       assert "has already been taken" in errors_on(changeset).email
 
-      # Now try with the upper cased email too, to check that email case is ignored.
-      {:error, changeset} = Identity.register_user(%{email: String.upcase(email)})
+      # Now try with the upper cased email too, to check that email case is
+      # ignored.
+      {:error, changeset} =
+        Identity.register_user(%{email: String.upcase(email)})
+
       assert "has already been taken" in errors_on(changeset).email
     end
 
@@ -96,7 +110,9 @@ defmodule Zaqueu.IdentityTest do
 
   describe "change_user_registration/2" do
     test "returns a changeset" do
-      assert %Ecto.Changeset{} = changeset = Identity.change_user_registration(%User{})
+      assert %Ecto.Changeset{} =
+               changeset = Identity.change_user_registration(%User{})
+
       assert changeset.required == [:password, :email]
     end
 
@@ -130,22 +146,29 @@ defmodule Zaqueu.IdentityTest do
     end
 
     test "requires email to change", %{user: user} do
-      {:error, changeset} = Identity.apply_user_email(user, valid_user_password(), %{})
-      assert %{email: ["did not change"]} = errors_on(changeset)
+      {:error, changeset} =
+        Identity.apply_user_email(user, valid_user_password(), %{})
+
+      assert %{email: ["Não alterou!"]} = errors_on(changeset)
     end
 
     test "validates email", %{user: user} do
       {:error, changeset} =
-        Identity.apply_user_email(user, valid_user_password(), %{email: "not valid"})
+        Identity.apply_user_email(user, valid_user_password(), %{
+          email: "not valid"
+        })
 
-      assert %{email: ["must have the @ sign and no spaces"]} = errors_on(changeset)
+      assert %{email: ["Necessário ter o @ e não pode ter espaços"]} =
+               errors_on(changeset)
     end
 
     test "validates maximum value for email for security", %{user: user} do
       too_long = String.duplicate("db", 100)
 
       {:error, changeset} =
-        Identity.apply_user_email(user, valid_user_password(), %{email: too_long})
+        Identity.apply_user_email(user, valid_user_password(), %{
+          email: too_long
+        })
 
       assert "should be at most 160 character(s)" in errors_on(changeset).email
     end
@@ -154,7 +177,8 @@ defmodule Zaqueu.IdentityTest do
       %{email: email} = user_fixture()
       password = valid_user_password()
 
-      {:error, changeset} = Identity.apply_user_email(user, password, %{email: email})
+      {:error, changeset} =
+        Identity.apply_user_email(user, password, %{email: email})
 
       assert "has already been taken" in errors_on(changeset).email
     end
@@ -163,12 +187,15 @@ defmodule Zaqueu.IdentityTest do
       {:error, changeset} =
         Identity.apply_user_email(user, "invalid", %{email: unique_user_email()})
 
-      assert %{current_password: ["is not valid"]} = errors_on(changeset)
+      assert %{current_password: ["Inválido"]} = errors_on(changeset)
     end
 
     test "applies the email without persisting it", %{user: user} do
       email = unique_user_email()
-      {:ok, user} = Identity.apply_user_email(user, valid_user_password(), %{email: email})
+
+      {:ok, user} =
+        Identity.apply_user_email(user, valid_user_password(), %{email: email})
+
       assert user.email == email
       assert Identity.get_user!(user.id).email != email
     end
@@ -182,11 +209,18 @@ defmodule Zaqueu.IdentityTest do
     test "sends token through notification", %{user: user} do
       token =
         extract_user_token(fn url ->
-          Identity.deliver_user_update_email_instructions(user, "current@example.com", url)
+          Identity.deliver_user_update_email_instructions(
+            user,
+            "current@example.com",
+            url
+          )
         end)
 
       {:ok, token} = Base.url_decode64(token, padding: false)
-      assert user_token = Repo.get_by(UserToken, token: :crypto.hash(:sha256, token))
+
+      assert user_token =
+               Repo.get_by(UserToken, token: :crypto.hash(:sha256, token))
+
       assert user_token.user_id == user.id
       assert user_token.sent_to == user.email
       assert user_token.context == "change:current@example.com"
@@ -200,13 +234,21 @@ defmodule Zaqueu.IdentityTest do
 
       token =
         extract_user_token(fn url ->
-          Identity.deliver_user_update_email_instructions(%{user | email: email}, user.email, url)
+          Identity.deliver_user_update_email_instructions(
+            %{user | email: email},
+            user.email,
+            url
+          )
         end)
 
       %{user: user, token: token, email: email}
     end
 
-    test "updates the email with a valid token", %{user: user, token: token, email: email} do
+    test "updates the email with a valid token", %{
+      user: user,
+      token: token,
+      email: email
+    } do
       assert Identity.update_user_email(user, token) == :ok
       changed_user = Repo.get!(User, user.id)
       assert changed_user.email != user.email
@@ -222,14 +264,23 @@ defmodule Zaqueu.IdentityTest do
       assert Repo.get_by(UserToken, user_id: user.id)
     end
 
-    test "does not update email if user email changed", %{user: user, token: token} do
-      assert Identity.update_user_email(%{user | email: "current@example.com"}, token) == :error
+    test "does not update email if user email changed", %{
+      user: user,
+      token: token
+    } do
+      assert Identity.update_user_email(
+               %{user | email: "current@example.com"},
+               token
+             ) == :error
+
       assert Repo.get!(User, user.id).email == user.email
       assert Repo.get_by(UserToken, user_id: user.id)
     end
 
     test "does not update email if token expired", %{user: user, token: token} do
-      {1, nil} = Repo.update_all(UserToken, set: [inserted_at: ~N[2020-01-01 00:00:00]])
+      {1, nil} =
+        Repo.update_all(UserToken, set: [inserted_at: ~N[2020-01-01 00:00:00]])
+
       assert Identity.update_user_email(user, token) == :error
       assert Repo.get!(User, user.id).email == user.email
       assert Repo.get_by(UserToken, user_id: user.id)
@@ -238,7 +289,9 @@ defmodule Zaqueu.IdentityTest do
 
   describe "change_user_password/2" do
     test "returns a user changeset" do
-      assert %Ecto.Changeset{} = changeset = Identity.change_user_password(%User{})
+      assert %Ecto.Changeset{} =
+               changeset = Identity.change_user_password(%User{})
+
       assert changeset.required == [:password]
     end
 
@@ -268,7 +321,7 @@ defmodule Zaqueu.IdentityTest do
 
       assert %{
                password: ["should be at least 12 character(s)"],
-               password_confirmation: ["does not match password"]
+               password_confirmation: ["Senhas não combinam"]
              } = errors_on(changeset)
     end
 
@@ -276,16 +329,20 @@ defmodule Zaqueu.IdentityTest do
       too_long = String.duplicate("db", 100)
 
       {:error, changeset} =
-        Identity.update_user_password(user, valid_user_password(), %{password: too_long})
+        Identity.update_user_password(user, valid_user_password(), %{
+          password: too_long
+        })
 
       assert "should be at most 72 character(s)" in errors_on(changeset).password
     end
 
     test "validates current password", %{user: user} do
       {:error, changeset} =
-        Identity.update_user_password(user, "invalid", %{password: valid_user_password()})
+        Identity.update_user_password(user, "invalid", %{
+          password: valid_user_password()
+        })
 
-      assert %{current_password: ["is not valid"]} = errors_on(changeset)
+      assert %{current_password: ["Inválido"]} = errors_on(changeset)
     end
 
     test "updates the password", %{user: user} do
@@ -295,7 +352,11 @@ defmodule Zaqueu.IdentityTest do
         })
 
       assert is_nil(user.password)
-      assert Identity.get_user_by_email_and_password(user.email, "new valid password")
+
+      assert Identity.get_user_by_email_and_password(
+               user.email,
+               "new valid password"
+             )
     end
 
     test "deletes all tokens for the given user", %{user: user} do
@@ -348,7 +409,9 @@ defmodule Zaqueu.IdentityTest do
     end
 
     test "does not return user for expired token", %{token: token} do
-      {1, nil} = Repo.update_all(UserToken, set: [inserted_at: ~N[2020-01-01 00:00:00]])
+      {1, nil} =
+        Repo.update_all(UserToken, set: [inserted_at: ~N[2020-01-01 00:00:00]])
+
       refute Identity.get_user_by_session_token(token)
     end
   end
@@ -374,7 +437,10 @@ defmodule Zaqueu.IdentityTest do
         end)
 
       {:ok, token} = Base.url_decode64(token, padding: false)
-      assert user_token = Repo.get_by(UserToken, token: :crypto.hash(:sha256, token))
+
+      assert user_token =
+               Repo.get_by(UserToken, token: :crypto.hash(:sha256, token))
+
       assert user_token.user_id == user.id
       assert user_token.sent_to == user.email
       assert user_token.context == "confirm"
@@ -408,7 +474,9 @@ defmodule Zaqueu.IdentityTest do
     end
 
     test "does not confirm email if token expired", %{user: user, token: token} do
-      {1, nil} = Repo.update_all(UserToken, set: [inserted_at: ~N[2020-01-01 00:00:00]])
+      {1, nil} =
+        Repo.update_all(UserToken, set: [inserted_at: ~N[2020-01-01 00:00:00]])
+
       assert Identity.confirm_user(token) == :error
       refute Repo.get!(User, user.id).confirmed_at
       assert Repo.get_by(UserToken, user_id: user.id)
@@ -427,7 +495,10 @@ defmodule Zaqueu.IdentityTest do
         end)
 
       {:ok, token} = Base.url_decode64(token, padding: false)
-      assert user_token = Repo.get_by(UserToken, token: :crypto.hash(:sha256, token))
+
+      assert user_token =
+               Repo.get_by(UserToken, token: :crypto.hash(:sha256, token))
+
       assert user_token.user_id == user.id
       assert user_token.sent_to == user.email
       assert user_token.context == "reset_password"
@@ -456,8 +527,13 @@ defmodule Zaqueu.IdentityTest do
       assert Repo.get_by(UserToken, user_id: user.id)
     end
 
-    test "does not return the user if token expired", %{user: user, token: token} do
-      {1, nil} = Repo.update_all(UserToken, set: [inserted_at: ~N[2020-01-01 00:00:00]])
+    test "does not return the user if token expired", %{
+      user: user,
+      token: token
+    } do
+      {1, nil} =
+        Repo.update_all(UserToken, set: [inserted_at: ~N[2020-01-01 00:00:00]])
+
       refute Identity.get_user_by_reset_password_token(token)
       assert Repo.get_by(UserToken, user_id: user.id)
     end
@@ -477,25 +553,37 @@ defmodule Zaqueu.IdentityTest do
 
       assert %{
                password: ["should be at least 12 character(s)"],
-               password_confirmation: ["does not match password"]
+               password_confirmation: ["Senhas não combinam"]
              } = errors_on(changeset)
     end
 
     test "validates maximum values for password for security", %{user: user} do
       too_long = String.duplicate("db", 100)
-      {:error, changeset} = Identity.reset_user_password(user, %{password: too_long})
+
+      {:error, changeset} =
+        Identity.reset_user_password(user, %{password: too_long})
+
       assert "should be at most 72 character(s)" in errors_on(changeset).password
     end
 
     test "updates the password", %{user: user} do
-      {:ok, updated_user} = Identity.reset_user_password(user, %{password: "new valid password"})
+      {:ok, updated_user} =
+        Identity.reset_user_password(user, %{password: "new valid password"})
+
       assert is_nil(updated_user.password)
-      assert Identity.get_user_by_email_and_password(user.email, "new valid password")
+
+      assert Identity.get_user_by_email_and_password(
+               user.email,
+               "new valid password"
+             )
     end
 
     test "deletes all tokens for the given user", %{user: user} do
       _ = Identity.generate_user_session_token(user)
-      {:ok, _} = Identity.reset_user_password(user, %{password: "new valid password"})
+
+      {:ok, _} =
+        Identity.reset_user_password(user, %{password: "new valid password"})
+
       refute Repo.get_by(UserToken, user_id: user.id)
     end
   end

@@ -10,6 +10,7 @@ defmodule ZaqueuWeb.CoreComponents do
   """
   use Phoenix.Component
 
+  alias Phoenix.HTML.Form
   alias Phoenix.LiveView.JS
   import ZaqueuWeb.Gettext
 
@@ -52,7 +53,11 @@ defmodule ZaqueuWeb.CoreComponents do
       phx-remove={hide_modal(@id)}
       class="relative z-50 hidden"
     >
-      <div id={"#{@id}-bg"} class="fixed inset-0 bg-zinc-50/90 transition-opacity" aria-hidden="true" />
+      <div
+        id={"#{@id}-bg"}
+        class="fixed inset-0 bg-zinc-50/90 transition-opacity"
+        aria-hidden="true"
+      />
       <div
         class="fixed inset-0 overflow-y-auto"
         aria-labelledby={"#{@id}-title"}
@@ -83,7 +88,10 @@ defmodule ZaqueuWeb.CoreComponents do
               </div>
               <div id={"#{@id}-content"}>
                 <header :if={@title != []}>
-                  <h1 id={"#{@id}-title"} class="text-lg font-semibold leading-8 text-zinc-800">
+                  <h1
+                    id={"#{@id}-title"}
+                    class="text-lg font-semibold leading-8 text-zinc-800"
+                  >
                     <%= render_slot(@title) %>
                   </h1>
                   <p
@@ -95,7 +103,10 @@ defmodule ZaqueuWeb.CoreComponents do
                   </p>
                 </header>
                 <%= render_slot(@inner_block) %>
-                <div :if={@confirm != [] or @cancel != []} class="ml-6 mb-4 flex items-center gap-5">
+                <div
+                  :if={@confirm != [] or @cancel != []}
+                  class="ml-6 mb-4 flex items-center gap-5"
+                >
                   <.button
                     :for={confirm <- @confirm}
                     id={"#{@id}-confirm"}
@@ -131,14 +142,29 @@ defmodule ZaqueuWeb.CoreComponents do
       <.flash kind={:info} phx-mounted={show("#flash")}>Welcome Back!</.flash>
   """
   attr(:id, :string, default: "flash", doc: "the optional id of flash container")
+
   attr(:flash, :map, default: %{}, doc: "the map of flash messages to display")
   attr(:title, :string, default: nil)
-  attr(:kind, :atom, values: [:info, :error], doc: "used for styling and flash lookup")
-  attr(:autoshow, :boolean, default: true, doc: "whether to auto show the flash on mount")
-  attr(:close, :boolean, default: true, doc: "whether the flash can be closed")
-  attr(:rest, :global, doc: "the arbitrary HTML attributes to add to the flash container")
 
-  slot(:inner_block, doc: "the optional inner block that renders the flash message")
+  attr(:kind, :atom,
+    values: [:info, :error],
+    doc: "used for styling and flash lookup"
+  )
+
+  attr(:autoshow, :boolean,
+    default: true,
+    doc: "whether to auto show the flash on mount"
+  )
+
+  attr(:close, :boolean, default: true, doc: "whether the flash can be closed")
+
+  attr(:rest, :global,
+    doc: "the arbitrary HTML attributes to add to the flash container"
+  )
+
+  slot(:inner_block,
+    doc: "the optional inner block that renders the flash message"
+  )
 
   def flash(assigns) do
     ~H"""
@@ -150,14 +176,27 @@ defmodule ZaqueuWeb.CoreComponents do
       role="alert"
       class={[
         "fixed hidden top-2 right-2 w-80 sm:w-96 z-50 rounded-lg p-3 shadow-md shadow-zinc-900/5 ring-1",
-        @kind == :info && "bg-emerald-50 text-emerald-800 ring-emerald-500 fill-cyan-900",
-        @kind == :error && "bg-rose-50 p-3 text-rose-900 shadow-md ring-rose-500 fill-rose-900"
+        @kind == :info &&
+          "bg-emerald-50 text-emerald-800 ring-emerald-500 fill-cyan-900",
+        @kind == :error &&
+          "bg-rose-50 p-3 text-rose-900 shadow-md ring-rose-500 fill-rose-900"
       ]}
       {@rest}
     >
-      <p :if={@title} class="flex items-center gap-1.5 text-[0.8125rem] font-semibold leading-6">
-        <.icon :if={@kind == :info} name="hero-information-circle-mini" class="w-4 h-4" />
-        <.icon :if={@kind == :error} name="hero-exclamation-circle-mini" class="w-4 h-4" />
+      <p
+        :if={@title}
+        class="flex items-center gap-1.5 text-[0.8125rem] font-semibold leading-6"
+      >
+        <.icon
+          :if={@kind == :info}
+          name="hero-information-circle-mini"
+          class="w-4 h-4"
+        />
+        <.icon
+          :if={@kind == :error}
+          name="hero-exclamation-circle-mini"
+          class="w-4 h-4"
+        />
         <%= @title %>
       </p>
       <p class="mt-2 text-[0.8125rem] leading-5"><%= msg %></p>
@@ -167,7 +206,10 @@ defmodule ZaqueuWeb.CoreComponents do
         class="group absolute top-2 right-1 p-2"
         aria-label={gettext("close")}
       >
-        <.icon name="hero-x-mark-solid" class="w-5 h-5 opacity-40 group-hover:opacity-70" />
+        <.icon
+          name="hero-x-mark-solid"
+          class="w-5 h-5 opacity-40 group-hover:opacity-70"
+        />
       </button>
     </div>
     """
@@ -195,7 +237,8 @@ defmodule ZaqueuWeb.CoreComponents do
       phx-disconnected={show("#disconnected")}
       phx-connected={hide("#disconnected")}
     >
-      Attempting to reconnect <.icon name="hero-arrow-path" class="ml-1 w-3 h-3 animate-spin" />
+      Attempting to reconnect
+      <.icon name="hero-arrow-path" class="ml-1 w-3 h-3 animate-spin" />
     </.flash>
     """
   end
@@ -214,7 +257,12 @@ defmodule ZaqueuWeb.CoreComponents do
       </.simple_form>
   """
   attr(:for, :any, required: true, doc: "the datastructure for the form")
-  attr(:as, :any, default: nil, doc: "the server side parameter to collect all input under")
+
+  attr(:as, :any,
+    default: nil,
+    doc: "the server side parameter to collect all input under"
+  )
+
   attr(:color, :any, default: "bg-white")
 
   attr(:rest, :global,
@@ -230,7 +278,10 @@ defmodule ZaqueuWeb.CoreComponents do
     <.form :let={f} for={@for} as={@as} {@rest}>
       <div class={"space-y-8 mt-10 #{@color}"}>
         <%= render_slot(@inner_block, f) %>
-        <div :for={action <- @actions} class="mt-2 flex items-center justify-between gap-6">
+        <div
+          :for={action <- @actions}
+          class="mt-2 flex items-center justify-between gap-6"
+        >
           <%= render_slot(action, f) %>
         </div>
       </div>
@@ -287,21 +338,35 @@ defmodule ZaqueuWeb.CoreComponents do
 
   attr(:type, :string,
     default: "text",
-    values: ~w(checkbox color date datetime-local email file hidden month number password
+    values:
+      ~w(checkbox color date datetime-local email file hidden month number password
                range radio search select tel text textarea time url week)
   )
 
   attr(:field, Phoenix.HTML.FormField,
-    doc: "a form field struct retrieved from the form, for example: @form[:email]"
+    doc:
+      "a form field struct retrieved from the form, for example: @form[:email]"
   )
 
   attr(:errors, :list, default: [])
   attr(:checked, :boolean, doc: "the checked flag for checkbox inputs")
   attr(:prompt, :string, default: nil, doc: "the prompt for select inputs")
-  attr(:options, :list, doc: "the options to pass to Phoenix.HTML.Form.options_for_select/2")
-  attr(:multiple, :boolean, default: false, doc: "the multiple flag for select inputs")
-  attr(:rest, :global, include: ~w(autocomplete cols disabled form max maxlength min minlength
-                                   pattern placeholder readonly required rows size step))
+
+  attr(:options, :list,
+    doc: "the options to pass to Phoenix.HTML.Form.options_for_select/2"
+  )
+
+  attr(:multiple, :boolean,
+    default: false,
+    doc: "the multiple flag for select inputs"
+  )
+
+  attr(:rest, :global,
+    include:
+      ~w(autocomplete cols disabled form max maxlength min minlength
+                                   pattern placeholder readonly required rows size step)
+  )
+
   attr(:class, :string, default: "")
   attr(:label_color, :string, default: "")
   slot(:inner_block)
@@ -310,14 +375,18 @@ defmodule ZaqueuWeb.CoreComponents do
     assigns
     |> assign(field: nil, id: assigns.id || field.id)
     |> assign(:errors, Enum.map(field.errors, &translate_error(&1)))
-    |> assign_new(:name, fn -> if assigns.multiple, do: field.name <> "[]", else: field.name end)
+    |> assign_new(:name, fn ->
+      if assigns.multiple, do: field.name <> "[]", else: field.name
+    end)
     |> assign_new(:value, fn -> field.value end)
     |> input()
   end
 
   def input(%{type: "checkbox", value: value} = assigns) do
     assigns =
-      assign_new(assigns, :checked, fn -> Phoenix.HTML.Form.normalize_value("checkbox", value) end)
+      assign_new(assigns, :checked, fn ->
+        Form.normalize_value("checkbox", value)
+      end)
 
     ~H"""
     <div phx-feedback-for={@name}>
@@ -370,7 +439,8 @@ defmodule ZaqueuWeb.CoreComponents do
           "text-zinc-900 focus:border-zinc-400 focus:outline-none focus:ring-4 focus:ring-zinc-800/5 sm:text-sm sm:leading-6",
           "phx-no-feedback:border-zinc-300 phx-no-feedback:focus:border-zinc-400 phx-no-feedback:focus:ring-zinc-800/5",
           "border-zinc-300 focus:border-zinc-400 focus:ring-zinc-800/5",
-          @errors != [] && "border-rose-400 focus:border-rose-400 focus:ring-rose-400/10"
+          @errors != [] &&
+            "border-rose-400 focus:border-rose-400 focus:ring-rose-400/10"
         ]}
         {@rest}
       ><%= Phoenix.HTML.Form.normalize_value("textarea", @value) %></textarea>
@@ -394,7 +464,8 @@ defmodule ZaqueuWeb.CoreComponents do
           "phx-no-feedback:border-zinc-300 phx-no-feedback:focus:border-zinc-400 phx-no-feedback:focus:ring-zinc-800/5",
           "border-zinc-300 focus:border-zinc-400 focus:ring-zinc-800/5",
           "#{@class}",
-          @errors != [] && "border-rose-400 focus:border-rose-400 focus:ring-rose-400/10"
+          @errors != [] &&
+            "border-rose-400 focus:border-rose-400 focus:ring-rose-400/10"
         ]}
         {@rest}
       />
@@ -412,7 +483,10 @@ defmodule ZaqueuWeb.CoreComponents do
 
   def label(assigns) do
     ~H"""
-    <label for={@for} class={"block text-sm font-semibold leading-6 text-zinc-800 #{@color}"}>
+    <label
+      for={@for}
+      class={"block text-sm font-semibold leading-6 text-zinc-800 #{@color}"}
+    >
       <%= render_slot(@inner_block) %>
     </label>
     """
@@ -443,7 +517,10 @@ defmodule ZaqueuWeb.CoreComponents do
 
   def header(assigns) do
     ~H"""
-    <header class={[@actions != [] && "flex items-center justify-between gap-6", @class]}>
+    <header class={[
+      @actions != [] && "flex items-center justify-between gap-6",
+      @class
+    ]}>
       <div>
         <h1 class="text-lg font-semibold leading-8 text-zinc-800">
           <%= render_slot(@inner_block) %>
@@ -469,25 +546,41 @@ defmodule ZaqueuWeb.CoreComponents do
   """
   attr(:id, :string, required: true)
   attr(:rows, :list, required: true)
-  attr(:row_id, :any, default: nil, doc: "the function for generating the row id")
-  attr(:row_click, :any, default: nil, doc: "the function for handling phx-click on each row")
+
+  attr(:row_id, :any,
+    default: nil,
+    doc: "the function for generating the row id"
+  )
+
+  attr(:row_click, :any,
+    default: nil,
+    doc: "the function for handling phx-click on each row"
+  )
 
   attr(:row_item, :any,
     default: &Function.identity/1,
-    doc: "the function for mapping each row before calling the :col and :action slots"
+    doc:
+      "the function for mapping each row before calling the :col and :action slots"
   )
 
   slot :col, required: true do
     attr(:label, :string)
+    attr(:color, :string)
   end
 
-  slot(:action, doc: "the slot for showing user actions in the last table column")
+  slot(:action,
+    doc: "the slot for showing user actions in the last table column"
+  )
 
   def table(assigns) do
     assigns =
       with %{rows: %Phoenix.LiveView.LiveStream{}} <- assigns do
         assign(assigns, row_id: assigns.row_id || fn {id, _item} -> id end)
       end
+
+    # IO.inspect(assigns.col)
+
+    # color = Map.get(assigns.col, :color, "text-gray-900")
 
     ~H"""
     <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg my-4">
@@ -497,11 +590,13 @@ defmodule ZaqueuWeb.CoreComponents do
             <th
               :for={col <- @col}
               scope="col"
-              class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+              class="px-3 py-3.5 text-left text-sm font-semibold tex-gray-900"
             >
               <%= col[:label] %>
             </th>
-            <th class="relative p-0 pb-4"><span class="sr-only"><%= gettext("Actions") %></span></th>
+            <th class="relative p-0 pb-4">
+              <span class="sr-only"><%= gettext("Actions") %></span>
+            </th>
           </tr>
         </thead>
         <tbody
@@ -509,7 +604,11 @@ defmodule ZaqueuWeb.CoreComponents do
           phx-update={match?(%Phoenix.LiveView.LiveStream{}, @rows) && "stream"}
           class="divide-y divide-gray-200 bg-white"
         >
-          <tr :for={row <- @rows} id={@row_id && @row_id.(row)} class="hover:bg-zinc-50">
+          <tr
+            :for={row <- @rows}
+            id={@row_id && @row_id.(row)}
+            class="hover:bg-zinc-50"
+          >
             <td
               :for={{col, i} <- Enum.with_index(@col)}
               phx-click={@row_click && @row_click.(row)}
@@ -520,19 +619,22 @@ defmodule ZaqueuWeb.CoreComponents do
             >
               <div class="block py-2 pr-6">
                 <span class="absolute -inset-y-px right-0 -left-4 group-hover:bg-zinc-50 sm:rounded-l-xl" />
-                <span class={["relative", i == 0 && "font-medium text-gray-900"]}>
+                <span class={[
+                  "relative #{Map.get(col, :color, "")}",
+                  i == 0 && "font-medium text-gray-900"
+                ]}>
                   <%= render_slot(col, @row_item.(row)) %>
                 </span>
               </div>
             </td>
             <td
               :if={@action != []}
-              class="relative whitespace-nowrap pl-3 pr-4 text-right text-sm font-medium sm:pr-6"
+              class="relative whitespace-nowrap text-right text-sm font-medium sm:pr-4"
             >
               <span class="absolute -inset-y-px -right-4 left-0 group-hover:bg-zinc-50 sm:rounded-r-xl" />
               <span
                 :for={action <- @action}
-                class="relative ml-4 font-semibold leading-6 text-brand hover:text-brand-900"
+                class="relative ml-2 font-semibold leading-6 text-brand hover:text-brand-900"
               >
                 <%= render_slot(action, @row_item.(row)) %>
               </span>
@@ -563,7 +665,9 @@ defmodule ZaqueuWeb.CoreComponents do
     <div class="mt-14">
       <dl class="-my-4 divide-y divide-zinc-100">
         <div :for={item <- @item} class="flex gap-4 py-4 sm:gap-8">
-          <dt class="w-1/4 flex-none text-[0.8125rem] leading-6 text-zinc-500"><%= item.title %></dt>
+          <dt class="w-1/4 flex-none text-[0.8125rem] leading-6 text-zinc-500">
+            <%= item.title %>
+          </dt>
           <dd class="text-sm leading-6 text-zinc-700"><%= render_slot(item) %></dd>
         </div>
       </dl>
@@ -652,7 +756,9 @@ defmodule ZaqueuWeb.CoreComponents do
     |> JS.show(to: "##{id}")
     |> JS.show(
       to: "##{id}-bg",
-      transition: {"transition-all transform ease-out duration-300", "opacity-0", "opacity-100"}
+      transition:
+        {"transition-all transform ease-out duration-300", "opacity-0",
+         "opacity-100"}
     )
     |> show("##{id}-container")
     |> JS.add_class("overflow-hidden", to: "body")
@@ -663,7 +769,9 @@ defmodule ZaqueuWeb.CoreComponents do
     js
     |> JS.hide(
       to: "##{id}-bg",
-      transition: {"transition-all transform ease-in duration-200", "opacity-100", "opacity-0"}
+      transition:
+        {"transition-all transform ease-in duration-200", "opacity-100",
+         "opacity-0"}
     )
     |> hide("##{id}-container")
     |> JS.hide(to: "##{id}", transition: {"block", "block", "hidden"})

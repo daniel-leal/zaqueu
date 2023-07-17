@@ -18,6 +18,7 @@ defmodule ZaqueuWeb.BankAccountLive.FormComponent do
         phx-change="validate"
         phx-submit="save"
       >
+        <.input field={@form[:user_id]} type="hidden" value={@user_id} />
         <.input
           field={@form[:bank_id]}
           type="select"
@@ -25,7 +26,8 @@ defmodule ZaqueuWeb.BankAccountLive.FormComponent do
           prompt="Selecione um banco..."
           options={Enum.map(@banks, &{&1.name, &1.id})}
         />
-
+        <.input field={@form[:agency]} type="text" label="Agência" />
+        <.input field={@form[:account_number]} type="text" label="Conta" />
         <.input
           field={@form[:initial_balance]}
           label="Saldo"
@@ -33,19 +35,16 @@ defmodule ZaqueuWeb.BankAccountLive.FormComponent do
           step="0.01"
           placeholder="0.00"
         />
-
         <.input
           field={@form[:initial_balance_date]}
           type="date"
           label="Data do saldo"
           value={
             if @form[:initial_balance_date].value == nil,
-              do: Timex.today(),
+              do: Timex.today("America/Sao_Paulo"),
               else: @form[:initial_balance_date].value
           }
         />
-        <.input field={@form[:agency]} type="text" label="Agência" />
-        <.input field={@form[:account_number]} type="text" label="Conta" />
         <:actions>
           <.button phx-disable-with="Salvando...">Salvar</.button>
         </:actions>
@@ -79,7 +78,10 @@ defmodule ZaqueuWeb.BankAccountLive.FormComponent do
   end
 
   defp save_bank_account(socket, :edit, bank_account_params) do
-    case Financial.update_bank_account(socket.assigns.bank_account, bank_account_params) do
+    case Financial.update_bank_account(
+           socket.assigns.bank_account,
+           bank_account_params
+         ) do
       {:ok, bank_account} ->
         notify_parent({:saved, bank_account})
 
@@ -94,8 +96,6 @@ defmodule ZaqueuWeb.BankAccountLive.FormComponent do
   end
 
   defp save_bank_account(socket, :new, bank_account_params) do
-    bank_account_params = Map.put(bank_account_params, "user_id", socket.assigns.user_id)
-
     case Financial.create_bank_account(bank_account_params) do
       {:ok, bank_account} ->
         notify_parent({:saved, bank_account})

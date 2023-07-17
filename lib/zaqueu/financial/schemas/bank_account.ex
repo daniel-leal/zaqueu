@@ -1,5 +1,5 @@
-defmodule Zaqueu.Financial.BankAccount do
-  alias Zaqueu.Financial
+defmodule Zaqueu.Financial.Schemas.BankAccount do
+  alias Zaqueu.Financial.Schemas, as: Financial
   alias Zaqueu.Identity
 
   use Ecto.Schema
@@ -36,11 +36,8 @@ defmodule Zaqueu.Financial.BankAccount do
       :user_id,
       :bank_id,
       :initial_balance,
-      :initial_balance_date,
-      :agency,
-      :account_number
+      :initial_balance_date
     ])
-    |> validate_number(:initial_balance, greater_than_or_equal_to: 0)
     |> validate_length(:agency, min: 3)
     |> validate_length(:account_number, min: 3)
   end

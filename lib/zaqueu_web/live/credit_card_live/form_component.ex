@@ -18,9 +18,16 @@ defmodule ZaqueuWeb.CreditCardLive.FormComponent do
         phx-change="validate"
         phx-submit="save"
       >
+        <.input field={@form[:user_id]} type="hidden" value={@user_id} />
         <.input field={@form[:description]} type="text" label="Descrição" />
-        <.input field={@form[:flag]} type="text" label="Bandeira" />
+        <.input
+          field={@form[:flag]}
+          type="select"
+          label="Bandeira"
+          options={Financial.flags()}
+        />
         <.input field={@form[:closing_day]} type="number" label="Dia de fechamento" />
+        <.input field={@form[:expiry_day]} type="number" label="Dia de vencimento" />
         <.input field={@form[:limit]} type="number" label="Limite" step="0.01" />
         <:actions>
           <.button phx-disable-with="Salvando...">Salvar</.button>
@@ -55,7 +62,10 @@ defmodule ZaqueuWeb.CreditCardLive.FormComponent do
   end
 
   defp save_credit_card(socket, :edit, credit_card_params) do
-    case Financial.update_credit_card(socket.assigns.credit_card, credit_card_params) do
+    case Financial.update_credit_card(
+           socket.assigns.credit_card,
+           credit_card_params
+         ) do
       {:ok, credit_card} ->
         notify_parent({:saved, credit_card})
 
@@ -71,7 +81,7 @@ defmodule ZaqueuWeb.CreditCardLive.FormComponent do
 
   defp save_credit_card(socket, :new, credit_card_params) do
     case Financial.create_credit_card(credit_card_params) do
-      {:ok, credit_card} ->
+      {:ok, %{credit_card: credit_card}} ->
         notify_parent({:saved, credit_card})
 
         {:noreply,
@@ -79,8 +89,17 @@ defmodule ZaqueuWeb.CreditCardLive.FormComponent do
          |> put_flash(:info, "Cartão de crédito incluído")
          |> push_patch(to: socket.assigns.patch)}
 
-      {:error, %Ecto.Changeset{} = changeset} ->
+      {:error, :credit_card, %Ecto.Changeset{} = changeset, _} ->
         {:noreply, assign_form(socket, changeset)}
+
+      {:error, :invoice, _, _} ->
+        {:noreply,
+         socket
+         |> put_flash(
+           :error,
+           "Ocorreu um erro interno. Entre em contato com o administrador!"
+         )
+         |> push_patch(to: socket.assigns.patch)}
     end
   end
 
