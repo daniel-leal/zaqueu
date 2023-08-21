@@ -4,6 +4,8 @@ defmodule ZaqueuWeb.BankAccountLive.Index do
   import ZaqueuWeb.DisplayHelpers, only: [local_date: 1, money: 1]
 
   alias Zaqueu.Financial
+  alias Zaqueu.Financial.Queries.BankAccountQueries
+  alias Zaqueu.Financial.Queries.BankQueries
   alias Zaqueu.Financial.Schemas.BankAccount
 
   @impl true
@@ -12,8 +14,11 @@ defmodule ZaqueuWeb.BankAccountLive.Index do
 
     socket =
       socket
-      |> assign(:banks, Financial.list_banks())
-      |> stream(:bank_accounts, Financial.list_bank_accounts(current_user.id))
+      |> assign(:banks, BankQueries.list_banks())
+      |> stream(
+        :bank_accounts,
+        BankAccountQueries.list_bank_accounts(current_user.id)
+      )
 
     {:ok, socket}
   end
@@ -26,7 +31,7 @@ defmodule ZaqueuWeb.BankAccountLive.Index do
   defp apply_action(socket, :edit, %{"id" => id}) do
     socket
     |> assign(:page_title, "Editar conta bancária")
-    |> assign(:bank_account, Financial.get_bank_account!(id))
+    |> assign(:bank_account, BankAccountQueries.get_bank_account_by_id!(id))
   end
 
   defp apply_action(socket, :new, _params) do
@@ -51,7 +56,7 @@ defmodule ZaqueuWeb.BankAccountLive.Index do
 
   @impl true
   def handle_event("delete", %{"id" => id}, socket) do
-    bank_account = Financial.get_bank_account!(id)
+    bank_account = BankAccountQueries.get_bank_account_by_id!(id)
     {:ok, _} = Financial.delete_bank_account(bank_account)
 
     {:noreply, stream_delete(socket, :bank_accounts, bank_account)}

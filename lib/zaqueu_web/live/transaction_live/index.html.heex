@@ -1,0 +1,80 @@
+<.header>
+  Listagem de transações da fatura de <%= @month %>
+  <:subtitle>Gerenciamento das transações da fatura</:subtitle>
+
+  <:actions>
+    <.link patch={
+      ~p"/credit_cards/#{@credit_card_id}/invoices/#{@invoice_id}/transactions/new"
+    }>
+      <.button>Nova Transação</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<div class="pt-8">
+  <.table id="transactions" rows={@streams.transactions}>
+    <:col :let={{_id, transaction}} label="Descrição">
+      <%= transaction.description %>
+    </:col>
+    <:col :let={{_id, transaction}} label="Valor" color="text-red-500">
+      <%= money(transaction.amount) %>
+    </:col>
+    <:col :let={{_id, transaction}} label="Data">
+      <%= local_date(transaction.date) %>
+    </:col>
+    <:action :let={{_id, transaction}}>
+      <div class="sr-only">
+        <.link navigate={
+          ~p"/credit_cards/#{@credit_card_id}/invoices/#{@invoice_id}/transactions/#{transaction}"
+        }>
+          Exibir
+        </.link>
+      </div>
+      <.link patch={
+        ~p"/credit_cards/#{@credit_card_id}/invoices/#{@invoice_id}/transactions/#{transaction}/edit"
+      }>
+        Editar
+      </.link>
+    </:action>
+    <:action :let={{id, transaction}}>
+      <.link
+        class="text-red-400"
+        phx-click={
+          JS.push("delete", value: %{transaction_id: transaction.id})
+          |> hide("##{id}")
+        }
+        data-confirm="Tem certeza?"
+      >
+        Deletar
+      </.link>
+    </:action>
+  </.table>
+</div>
+
+<.back navigate={~p"/credit_cards/#{@credit_card_id}"}>Voltar</.back>
+
+<.modal
+  :if={@live_action in [:new, :edit]}
+  id="transaction-modal"
+  show
+  on_cancel={
+    JS.navigate(
+      ~p"/credit_cards/#{@credit_card_id}/invoices/#{@invoice_id}/transactions"
+    )
+  }
+>
+  <.live_component
+    module={ZaqueuWeb.TransactionLive.FormComponent}
+    id={@transaction.id || :new}
+    title={@page_title}
+    action={@live_action}
+    transaction={@transaction}
+    invoice_id={@invoice_id}
+    kind_id={@kind_id}
+    categories={@categories}
+    kinds={@kinds}
+    patch={
+      ~p"/credit_cards/#{@credit_card_id}/invoices/#{@invoice_id}/transactions/"
+    }
+  />
+</.modal>

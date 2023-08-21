@@ -2,6 +2,7 @@ defmodule ZaqueuWeb.CreditCardLive.FormComponent do
   use ZaqueuWeb, :live_component
 
   alias Zaqueu.Financial
+  alias Zaqueu.Financial.Schemas.CreditCard
 
   @impl true
   def render(assigns) do
@@ -21,10 +22,10 @@ defmodule ZaqueuWeb.CreditCardLive.FormComponent do
         <.input field={@form[:user_id]} type="hidden" value={@user_id} />
         <.input field={@form[:description]} type="text" label="Descrição" />
         <.input
-          field={@form[:flag]}
+          field={@form[:brand]}
           type="select"
           label="Bandeira"
-          options={Financial.flags()}
+          options={CreditCard.list_brands()}
         />
         <.input field={@form[:closing_day]} type="number" label="Dia de fechamento" />
         <.input field={@form[:expiry_day]} type="number" label="Dia de vencimento" />

@@ -1,8 +1,8 @@
 defmodule Zaqueu.Financial.InvoiceCommandsTest do
   use Zaqueu.DataCase, async: true
 
-  alias Zaqueu.Financial.Schemas.Invoice
   alias Zaqueu.Financial
+  alias Zaqueu.Financial.Schemas.Invoice
 
   describe "update/2" do
     test "when all params are valid, should update an invoice" do

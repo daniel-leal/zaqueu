@@ -10,7 +10,7 @@ defmodule Zaqueu.Financial.Schemas.CreditCard do
     field(:closing_day, :integer)
     field(:expiry_day, :integer)
     field(:description, :string)
-    field(:flag, :string)
+    field(:brand, :string)
     field(:limit, :decimal)
     field(:user_id, :binary_id)
 
@@ -25,7 +25,7 @@ defmodule Zaqueu.Financial.Schemas.CreditCard do
     |> cast(attrs, [
       :expiry_day,
       :description,
-      :flag,
+      :brand,
       :closing_day,
       :limit,
       :user_id
@@ -33,7 +33,7 @@ defmodule Zaqueu.Financial.Schemas.CreditCard do
     |> validate_required([
       :expiry_day,
       :description,
-      :flag,
+      :brand,
       :closing_day,
       :limit,
       :user_id
@@ -41,5 +41,20 @@ defmodule Zaqueu.Financial.Schemas.CreditCard do
     |> validate_number(:closing_day, less_than: 32)
     |> validate_number(:expiry_day, less_than: 32)
     |> validate_number(:limit, greater_than: 0)
+  end
+
+  @doc """
+  Returns a list of supported credit card brands.
+
+  This function returns a list containing the supported credit card brands,
+  including "Amex", "Elo", "Hipercard", "MasterCard", and "Visa".
+
+  ## Returns
+
+  A list containing the supported credit card brands.
+
+  """
+  def list_brands do
+    ["Amex", "Elo", "Hipercard", "MasterCard", "Visa"]
   end
 end

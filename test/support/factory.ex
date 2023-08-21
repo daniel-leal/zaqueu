@@ -1,8 +1,16 @@
 defmodule Support.Factory do
-  alias Zaqueu.Financial.Schemas.BankAccount
   use ExMachina.Ecto, repo: Zaqueu.Repo
 
-  alias Zaqueu.Financial.Schemas.{Bank, BankAccount, CreditCard, Invoice}
+  alias Zaqueu.Financial.Schemas.{
+    Bank,
+    BankAccount,
+    Category,
+    CreditCard,
+    Invoice,
+    Kind,
+    Transaction
+  }
+
   alias Zaqueu.Identity.User
 
   def user_factory do
@@ -35,7 +43,7 @@ defmodule Support.Factory do
       closing_day: 7,
       expiry_day: 14,
       description: "Itau Card",
-      flag: "MasterCard",
+      brand: "MasterCard",
       limit: "1500"
     }
   end
@@ -47,6 +55,28 @@ defmodule Support.Factory do
       closing_date: ~D[2023-04-06],
       expiry_date: ~D[2023-04-14],
       is_paid: false
+    }
+  end
+
+  def category_factory do
+    %Category{
+      description: "Transport"
+    }
+  end
+
+  def kind_factory do
+    %Kind{
+      description: "Credit Card"
+    }
+  end
+
+  def transaction_factory do
+    %Transaction{
+      amount: Decimal.new("15.48"),
+      date: ~D[2023-04-02],
+      description: "Uber",
+      category: build(:category),
+      kind: build(:kind)
     }
   end
 end

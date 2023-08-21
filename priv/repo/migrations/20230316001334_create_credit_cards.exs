@@ -5,7 +5,7 @@ defmodule Zaqueu.Repo.Migrations.CreateCreditCards do
     create table(:credit_cards, primary_key: false) do
       add(:id, :binary_id, primary_key: true)
       add(:description, :string)
-      add(:flag, :string)
+      add(:brand, :string)
       add(:expiry_day, :integer)
       add(:closing_day, :integer)
       add(:limit, :decimal, precision: 20, scale: 2)

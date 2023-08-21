@@ -87,10 +87,12 @@ defmodule ZaqueuWeb.UserRegistrationLive do
 
         changeset = Identity.change_user_registration(user)
 
-        {:noreply, socket |> assign(trigger_submit: true) |> assign_form(changeset)}
+        {:noreply,
+         socket |> assign(trigger_submit: true) |> assign_form(changeset)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        {:noreply, socket |> assign(check_errors: true) |> assign_form(changeset)}
+        {:noreply,
+         socket |> assign(check_errors: true) |> assign_form(changeset)}
     end
   end
 

@@ -73,6 +73,36 @@ defmodule ZaqueuWeb.Router do
         CreditCardLive.Show,
         :edit
       )
+
+      live(
+        "/credit_cards/:id/invoices/:invoice_id/transactions",
+        TransactionLive.Index,
+        :index
+      )
+
+      live(
+        "/credit_cards/:id/invoices/:invoice_id/transactions/new",
+        TransactionLive.Index,
+        :new
+      )
+
+      live(
+        "/credit_cards/:id/invoices/:invoice_id/transactions/:transaction_id",
+        TransactionLive.Show,
+        :show
+      )
+
+      live(
+        "/credit_cards/:id/invoices/:invoice_id/transactions/:transaction_id/edit",
+        TransactionLive.Index,
+        :edit
+      )
+
+      live(
+        "/credit_cards/:id/invoices/:invoice_id/transactions/:transaction_id/show/edit",
+        TransactionLive.Show,
+        :edit
+      )
     end
   end
 

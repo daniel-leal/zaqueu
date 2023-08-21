@@ -2,8 +2,8 @@ defmodule Zaqueu.Financial.Schemas.Invoice do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias Zaqueu.Identity.User
   alias Zaqueu.Financial.Schemas.CreditCard
+  alias Zaqueu.Identity.User
 
   @status %{
     closed: "Fechado",
@@ -15,7 +15,7 @@ defmodule Zaqueu.Financial.Schemas.Invoice do
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
   schema "invoices" do
-    field(:amount, :decimal, default: 0.00)
+    field(:amount, :decimal)
     field(:start_date, :date)
     field(:closing_date, :date)
     field(:expiry_date, :date)
@@ -59,6 +59,7 @@ defmodule Zaqueu.Financial.Schemas.Invoice do
     |> cast(attrs, [:expiry_date, :is_paid, :amount])
     |> validate_required([:expiry_date, :is_paid])
     |> validate_expiry_date()
+    |> validate_amount()
   end
 
   defp is_current?(%__MODULE__{
@@ -105,6 +106,10 @@ defmodule Zaqueu.Financial.Schemas.Invoice do
     |> Map.put(:is_current, is_current?(invoice))
   end
 
+  def payable?(%__MODULE__{} = invoice) do
+    payment_status(invoice) != @status.open
+  end
+
   defp validate_expiry_date(changeset) do
     validate_change(changeset, :expiry_date, fn :expiry_date, expiry_date ->
       closing_date = get_field(changeset, :closing_date)
@@ -121,7 +126,13 @@ defmodule Zaqueu.Financial.Schemas.Invoice do
     end)
   end
 
-  def payable?(%__MODULE__{} = invoice) do
-    payment_status(invoice) != @status.open
+  defp validate_amount(changeset) do
+    is_paid = get_field(changeset, :is_paid)
+
+    if is_paid do
+      changeset
+    else
+      put_change(changeset, :amount, nil)
+    end
   end
 end
