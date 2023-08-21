@@ -1,17 +1,4 @@
-defmodule Zaqueu.Financial.Commands.CreditCardCommands do
-  alias Ecto.Multi
-  alias Zaqueu.Financial.Schemas.{CreditCard, Invoice}
-  alias Zaqueu.Repo
-
-  def create(attrs \\ %{}) do
-    Multi.new()
-    |> Multi.insert(:credit_card, CreditCard.changeset(%CreditCard{}, attrs))
-    |> Multi.insert_all(:invoices, Invoice, fn %{credit_card: credit_card} ->
-      generate_invoices(credit_card)
-    end)
-    |> Repo.transaction()
-  end
-
+defmodule Zaqueu.Financial.Commands.CreditCards.GenerateInvoices do
   def generate_invoices(credit_card) do
     month = Timex.today().month
     year = Timex.today().year
@@ -46,19 +33,5 @@ defmodule Zaqueu.Financial.Commands.CreditCardCommands do
         updated_at: timestamp
       }
     end)
-  end
-
-  def update(%CreditCard{} = credit_card, attrs) do
-    credit_card
-    |> CreditCard.changeset(attrs)
-    |> Repo.update()
-  end
-
-  def delete(%CreditCard{} = credit_card) do
-    Repo.delete(credit_card)
-  end
-
-  def change(%CreditCard{} = credit_card, attrs \\ %{}) do
-    CreditCard.changeset(credit_card, attrs)
   end
 end

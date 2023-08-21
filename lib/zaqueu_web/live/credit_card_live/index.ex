@@ -4,6 +4,7 @@ defmodule ZaqueuWeb.CreditCardLive.Index do
   import ZaqueuWeb.DisplayHelpers, only: [money: 1]
 
   alias Zaqueu.Financial
+  alias Zaqueu.Financial.Queries.CreditCardQueries
   alias Zaqueu.Financial.Schemas.CreditCard
 
   @impl true
@@ -11,7 +12,11 @@ defmodule ZaqueuWeb.CreditCardLive.Index do
     current_user = socket.assigns.current_user
 
     {:ok,
-     stream(socket, :credit_cards, Financial.list_credit_cards(current_user.id))}
+     stream(
+       socket,
+       :credit_cards,
+       CreditCardQueries.list_credit_cards(current_user.id)
+     )}
   end
 
   @impl true
@@ -22,7 +27,7 @@ defmodule ZaqueuWeb.CreditCardLive.Index do
   defp apply_action(socket, :edit, %{"id" => id}) do
     socket
     |> assign(:page_title, "Editar cartão")
-    |> assign(:credit_card, Financial.get_credit_card!(id))
+    |> assign(:credit_card, CreditCardQueries.get_credit_card_by_id!(id))
   end
 
   defp apply_action(socket, :new, _params) do
@@ -47,7 +52,7 @@ defmodule ZaqueuWeb.CreditCardLive.Index do
 
   @impl true
   def handle_event("delete", %{"id" => id}, socket) do
-    credit_card = Financial.get_credit_card!(id)
+    credit_card = CreditCardQueries.get_credit_card_by_id!(!id)
     {:ok, _} = Financial.delete_credit_card(credit_card)
 
     {:noreply, stream_delete(socket, :credit_cards, credit_card)}

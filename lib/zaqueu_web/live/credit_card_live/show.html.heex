@@ -102,10 +102,14 @@
         <%= invoice.payment_status %>
       </:col>
       <:col :let={invoice} label="Valor" color="text-red-500">
-        <%= money(invoice.amount) %>
+        <%= money(InvoiceQueries.get_total_by_invoice_id(invoice.id)) %>
       </:col>
-      <:action :let={_}>
-        <.link patch={~p"/credit_cards/#{@credit_card}"}>Transações</.link>
+      <:action :let={invoice}>
+        <.link navigate={
+          ~p"/credit_cards/#{@credit_card}/invoices/#{invoice.id}/transactions"
+        }>
+          Transações
+        </.link>
       </:action>
     </.table>
   </div>
@@ -126,6 +130,7 @@
     action={@live_action}
     inovoice_id={@invoice.id}
     invoice={@invoice}
+    amount={InvoiceQueries.get_total_by_invoice_id(@invoice.id)}
     patch={~p"/credit_cards/#{@credit_card}"}
   />
 </.modal>

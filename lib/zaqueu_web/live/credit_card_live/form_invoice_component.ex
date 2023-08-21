@@ -27,6 +27,19 @@ defmodule ZaqueuWeb.CreditCardLive.FormInvoiceComponent do
             type="select"
             label="Pago?"
             options={[{"Sim", true}, {"Não", false}]}
+            phx-change="is_paid_changed"
+          />
+        <% end %>
+
+        <%= if @is_paid == "true" or @is_paid == true do %>
+          <.input
+            field={@form[:amount]}
+            id="amount"
+            type="number"
+            label="Valor Pago"
+            step="0.01"
+            placeholder="0.00"
+            value={@amount}
           />
         <% end %>
 
@@ -45,7 +58,16 @@ defmodule ZaqueuWeb.CreditCardLive.FormInvoiceComponent do
     {:ok,
      socket
      |> assign(assigns)
+     |> assign(:is_paid, assigns.invoice.is_paid)
      |> assign_form(changeset)}
+  end
+
+  def handle_event(
+        "is_paid_changed",
+        %{"invoice" => %{"is_paid" => is_paid}},
+        socket
+      ) do
+    {:noreply, assign(socket, is_paid: is_paid)}
   end
 
   @impl true

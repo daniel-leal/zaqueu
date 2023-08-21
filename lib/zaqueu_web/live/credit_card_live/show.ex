@@ -3,7 +3,8 @@ defmodule ZaqueuWeb.CreditCardLive.Show do
 
   import ZaqueuWeb.DisplayHelpers
 
-  alias Zaqueu.Financial
+  alias Zaqueu.Financial.Queries.CreditCardQueries
+  alias Zaqueu.Financial.Queries.InvoiceQueries
 
   @impl true
   def mount(_params, _session, socket), do: {:ok, socket}
@@ -16,10 +17,10 @@ defmodule ZaqueuWeb.CreditCardLive.Show do
       ) do
     socket =
       socket
-      |> assign(:credit_card, Financial.get_credit_card!(id))
-      |> assign(:total, Financial.get_sum_by_credit_card(id))
-      |> assign(:invoice, Financial.get_invoice!(invoice_id))
-      |> assign(:invoices, Financial.list_invoices(id))
+      |> assign(:credit_card, CreditCardQueries.get_credit_card_by_id!(id))
+      |> assign(:total, InvoiceQueries.get_total_invoices_by_credit_card(id))
+      |> assign(:invoice, InvoiceQueries.get_invoice_by_id!(invoice_id))
+      |> assign(:invoices, InvoiceQueries.list_invoices(id))
 
     {:noreply, apply_action(socket, socket.assigns.live_action, params)}
   end
@@ -29,16 +30,16 @@ defmodule ZaqueuWeb.CreditCardLive.Show do
     {:noreply,
      socket
      |> assign(:page_title, page_title(socket.assigns.live_action))
-     |> assign(:credit_card, Financial.get_credit_card!(id))
-     |> assign(:total, Financial.get_sum_by_credit_card(id))
-     |> assign(:invoices, Financial.list_invoices(id))}
+     |> assign(:credit_card, CreditCardQueries.get_credit_card_by_id!(id))
+     |> assign(:total, InvoiceQueries.get_total_invoices_by_credit_card(id))
+     |> assign(:invoices, InvoiceQueries.list_invoices(id))}
   end
 
   defp apply_action(socket, :edit, %{"id" => id, "invoice_id" => invoice_id}) do
     socket
     |> assign(:page_title, "Editar Fatura")
-    |> assign(:credit_card, Financial.get_credit_card!(id))
-    |> assign(:invoice, Financial.get_invoice!(invoice_id))
+    |> assign(:credit_card, CreditCardQueries.get_credit_card_by_id!(id))
+    |> assign(:invoice, InvoiceQueries.get_invoice_by_id!(invoice_id))
   end
 
   defp page_title(:show), do: "Cartão de crédito"

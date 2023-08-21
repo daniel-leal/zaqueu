@@ -1,8 +1,8 @@
 defmodule Zaqueu.Financial.BankAccountCommandsTest do
   use Zaqueu.DataCase, async: true
 
-  alias Zaqueu.Financial.Schemas.BankAccount
   alias Zaqueu.Financial
+  alias Zaqueu.Financial.Schemas.BankAccount
 
   describe "create/1" do
     test "when all params are valid, should create a bank_account" do
