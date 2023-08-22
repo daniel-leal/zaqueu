@@ -34,6 +34,16 @@ defmodule Zaqueu.Financial.Schemas.Transaction do
   defp validate_credit_card_transaction(changeset) do
     kind_id = get_field(changeset, :kind_id)
 
+    case kind_id do
+      nil ->
+        changeset
+
+      _ ->
+        apply_credit_card_validation(kind_id, changeset)
+    end
+  end
+
+  defp apply_credit_card_validation(kind_id, changeset) do
     case KindQueries.get_kind_by_id(kind_id) do
       %Kind{description: "Cartão de Crédito"} ->
         changeset
@@ -49,23 +59,29 @@ defmodule Zaqueu.Financial.Schemas.Transaction do
     date = get_field(changeset, :date)
     invoice_id = get_field(changeset, :invoice_id)
 
-    if is_nil(invoice_id) do
+    case invoice_id do
+      nil ->
+        changeset
+
+      _ ->
+        apply_invoice_period_validation(date, invoice_id, changeset)
+    end
+  end
+
+  defp apply_invoice_period_validation(date, invoice_id, changeset) do
+    %Invoice{start_date: start_date, closing_date: closing_date} =
+      InvoiceQueries.get_invoice_by_id!(invoice_id)
+
+    if Timex.after?(date, start_date) and Timex.before?(date, closing_date) do
       changeset
     else
-      %Invoice{start_date: start_date, closing_date: closing_date} =
-        InvoiceQueries.get_invoice_by_id!(invoice_id)
-
-      if Timex.after?(date, start_date) and Timex.before?(date, closing_date) do
-        changeset
-      else
-        add_error(
-          changeset,
-          :date,
-          "A data da transação deve estar dentro do período da fatura, de: " <>
-            "#{DisplayHelpers.local_date(start_date)} até " <>
-            "#{DisplayHelpers.local_date(closing_date)}"
-        )
-      end
+      add_error(
+        changeset,
+        :date,
+        "A data da transação deve estar dentro do período da fatura, de: " <>
+          "#{DisplayHelpers.local_date(start_date)} até " <>
+          "#{DisplayHelpers.local_date(closing_date)}"
+      )
     end
   end
 end
