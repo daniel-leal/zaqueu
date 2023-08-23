@@ -4,11 +4,7 @@ defmodule Zaqueu.Financial.Commands.CreditCards.GenerateInvoices do
     year = Timex.today().year
 
     Enum.map(month..12, fn m ->
-      start_invoice =
-        {year, m, credit_card.closing_day}
-        |> Timex.to_date()
-        |> Timex.shift(days: 1)
-
+      start_invoice = Timex.to_date({year, m, credit_card.closing_day})
       closing_invoice = Timex.shift(start_invoice, months: 1)
 
       expiry_invoice =
