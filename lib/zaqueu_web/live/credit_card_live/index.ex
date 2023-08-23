@@ -52,7 +52,7 @@ defmodule ZaqueuWeb.CreditCardLive.Index do
 
   @impl true
   def handle_event("delete", %{"id" => id}, socket) do
-    credit_card = CreditCardQueries.get_credit_card_by_id!(!id)
+    credit_card = CreditCardQueries.get_credit_card_by_id!(id)
     {:ok, _} = Financial.delete_credit_card(credit_card)
 
     {:noreply, stream_delete(socket, :credit_cards, credit_card)}
