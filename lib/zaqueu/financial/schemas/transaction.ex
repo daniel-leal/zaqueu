@@ -28,7 +28,15 @@ defmodule Zaqueu.Financial.Schemas.Transaction do
     transaction
     |> cast(attrs, @required_fields ++ @optional_fields)
     |> validate_required(@required_fields)
+    |> validate_number(:amount, greater_than: Decimal.new("0.00"))
     |> validate_credit_card_transaction()
+  end
+
+  def update_changeset(transaction, attrs) do
+    transaction
+    |> cast(attrs, @required_fields -- [:kind])
+    |> validate_required(@required_fields)
+    |> validate_number(:amount, greater_than: Decimal.new("0.00"))
   end
 
   defp validate_credit_card_transaction(changeset) do

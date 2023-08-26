@@ -34,7 +34,9 @@ defmodule Support.Factory do
       account_number: "0948",
       agency: "168579",
       initial_balance: "120.50",
-      initial_balance_date: ~D[2023-03-14]
+      initial_balance_date: ~D[2023-03-14],
+      bank: build(:bank),
+      user: build(:user)
     }
   end
 
@@ -60,7 +62,7 @@ defmodule Support.Factory do
 
   def category_factory do
     %Category{
-      description: "Transport"
+      description: "Transporte"
     }
   end
 

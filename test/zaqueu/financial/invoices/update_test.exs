@@ -1,4 +1,4 @@
-defmodule Zaqueu.Financial.InvoiceCommandsTest do
+defmodule Zaqueu.Financial.Invoices.UpdateTest do
   use Zaqueu.DataCase, async: true
 
   alias Zaqueu.Financial

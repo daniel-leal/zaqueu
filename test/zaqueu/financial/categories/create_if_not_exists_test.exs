@@ -1,4 +1,4 @@
-defmodule Zaqueu.Financial.CategoryCommandsTest do
+defmodule Zaqueu.Financial.Categories.CreateIfNotExistsTest do
   use Zaqueu.DataCase, async: true
 
   alias Zaqueu.Financial
