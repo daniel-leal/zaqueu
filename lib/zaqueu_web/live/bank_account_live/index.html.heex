@@ -8,42 +8,68 @@
   </:actions>
 </.header>
 
-<.table
-  id="bank_accounts"
-  rows={@streams.bank_accounts}
-  row_click={
-    fn {_id, bank_account} ->
-      JS.navigate(~p"/bank_accounts/#{bank_account}")
-    end
-  }
->
-  <:col :let={{_id, bank_account}} label="Banco">
-    <%= bank_account.bank.name %>
-  </:col>
-  <:col :let={{_id, bank_account}} label="Saldo inicial">
-    <%= money(bank_account.initial_balance) %>
-  </:col>
-  <:col :let={{_id, bank_account}} label="Data do saldo">
-    <%= local_date(bank_account.initial_balance_date) %>
-  </:col>
-  <:action :let={{_id, bank_account}}>
-    <div class="sr-only">
-      <.link navigate={~p"/bank_accounts/#{bank_account}"}>Exibir</.link>
+
+<div class="pt-8">
+  <div
+    :if={
+      @streams.bank_accounts
+      |> Enum.to_list()
+      |> length() == 0
+    }
+    class="bg-orange-100 border-l-4 rounded-md border-orange-500 text-orange-700 p-4 mt-8" role="alert">
+    <div class="flex space-x-2">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+        </svg>
+      <p class="font-bold">
+        Você não tem contas bancárias cadastradas!
+      </p>
     </div>
-    <.link patch={~p"/bank_accounts/#{bank_account}/edit"}>Editar</.link>
-  </:action>
-  <:action :let={{id, bank_account}}>
-    <.link
-      class="text-red-400"
-      phx-click={
-        JS.push("delete", value: %{id: bank_account.id}) |> hide("##{id}")
-      }
-      data-confirm="Tem certeza?"
-    >
-      Deletar
-    </.link>
-  </:action>
-</.table>
+  </div>
+
+
+  <.table
+    :if={
+      @streams.bank_accounts
+      |> Enum.to_list()
+      |> length() > 0
+    }
+    id="bank_accounts"
+    rows={@streams.bank_accounts}
+    row_click={
+      fn {_id, bank_account} ->
+        JS.navigate(~p"/bank_accounts/#{bank_account}")
+      end
+    }
+  >
+    <:col :let={{_id, bank_account}} label="Banco">
+      <%= bank_account.bank.name %>
+    </:col>
+    <:col :let={{_id, bank_account}} label="Saldo inicial">
+      <%= money(bank_account.initial_balance) %>
+    </:col>
+    <:col :let={{_id, bank_account}} label="Data do saldo">
+      <%= local_date(bank_account.initial_balance_date) %>
+    </:col>
+    <:action :let={{_id, bank_account}}>
+      <div class="sr-only">
+        <.link navigate={~p"/bank_accounts/#{bank_account}"}>Exibir</.link>
+      </div>
+      <.link patch={~p"/bank_accounts/#{bank_account}/edit"}>Editar</.link>
+    </:action>
+    <:action :let={{id, bank_account}}>
+      <.link
+        class="text-red-400"
+        phx-click={
+          JS.push("delete", value: %{id: bank_account.id}) |> hide("##{id}")
+        }
+        data-confirm="Tem certeza?"
+      >
+        Deletar
+      </.link>
+    </:action>
+  </.table>
+</div>
 
 <.modal
   :if={@live_action in [:new, :edit]}
