@@ -4,6 +4,10 @@ defmodule ZaqueuWeb.UserRegistrationLive do
   alias Zaqueu.Identity
   alias Zaqueu.Identity.User
 
+  @default_avatar [
+    "https://images.unsplash.com/photo-1535378620166-273708d44e4c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2157&q=80"
+  ]
+
   def render(assigns) do
     ~H"""
     <div class="w-full  rounded-lg shadow border md:mt-0 sm:max-w-md xl:p-0 bg-slate-800 border-gray-700">
@@ -49,10 +53,47 @@ defmodule ZaqueuWeb.UserRegistrationLive do
             type="password"
             label="Senha"
             label_color="text-gray-300"
-            class="border  rounded text-gray-50  focus:ring-3 focus:ring-primary-300 bg-gray-700 border-gray-600 focus:ring-primary-600 ring-offset-gray-800"
+            class="border rounded text-gray-50  focus:ring-3 focus:ring-primary-300 bg-gray-700 border-gray-600 focus:ring-primary-600 ring-offset-gray-800"
             placeholder="••••••••••"
             required
           />
+
+          <.input field={@form[:avatar]} type="hidden" />
+
+          <label class="block text-sm font-semibold leading-6 text-zinc-800 text-gray-300">
+            Avatar
+          </label>
+          <.live_file_input
+            upload={@uploads.avatar}
+            class="border rounded text-gray-50 focus:ring-3 focus:ring-primary-300 bg-gray-700 border-gray-600 focus:ring-primary-600 ring-offset-gray-800"
+          />
+
+          <section phx-drop-target={@uploads.avatar.ref}>
+            <%= for entry <- @uploads.avatar.entries do %>
+              <article class="upload-entry">
+                <figure>
+                  <.live_img_preview entry={entry} width="120" />
+                  <button
+                    type="button"
+                    phx-click="cancel-upload"
+                    phx-value-ref={entry.ref}
+                    aria-label="cancel"
+                    class="bg-red-500 right hover:bg-red-700 text-white font-bold py-1 px-2 rounded mt-3"
+                  >
+                    &times;
+                  </button>
+                </figure>
+
+                <%= for err <- upload_errors(@uploads.avatar, entry) do %>
+                  <p class="alert alert-danger"><%= error_to_string(err) %></p>
+                <% end %>
+              </article>
+            <% end %>
+
+            <%= for err <- upload_errors(@uploads.avatar) do %>
+              <p class="alert alert-danger"><%= error_to_string(err) %></p>
+            <% end %>
+          </section>
 
           <:actions>
             <.button phx-disable-with="Criando conta..." class="w-full">
@@ -71,12 +112,32 @@ defmodule ZaqueuWeb.UserRegistrationLive do
     socket =
       socket
       |> assign(trigger_submit: false, check_errors: false)
+      |> allow_upload(:avatar, accept: ~w(.jpg .jpeg .png), max_entries: 1)
       |> assign_form(changeset)
 
     {:ok, socket, temporary_assigns: [form: nil]}
   end
 
   def handle_event("save", %{"user" => user_params}, socket) do
+    uploaded_files =
+      consume_uploaded_entries(socket, :avatar, fn %{path: path}, _entry ->
+        dest =
+          Path.join([
+            :code.priv_dir(:zaqueu),
+            "static",
+            "uploads",
+            Path.basename(path)
+          ])
+
+        File.cp!(path, dest)
+
+        {:ok, "/uploads/#{Path.basename(dest)}"}
+      end)
+
+    uploaded_files = if length(uploaded_files) == 0, do: @default_avatar
+
+    user_params = Map.put(user_params, "avatar", hd(uploaded_files))
+
     case Identity.register_user(user_params) do
       {:ok, user} ->
         {:ok, _} =
@@ -100,6 +161,16 @@ defmodule ZaqueuWeb.UserRegistrationLive do
     changeset = Identity.change_user_registration(%User{}, user_params)
     {:noreply, assign_form(socket, Map.put(changeset, :action, :validate))}
   end
+
+  def handle_event("cancel-upload", %{"ref" => ref}, socket) do
+    {:noreply, cancel_upload(socket, :avatar, ref)}
+  end
+
+  defp error_to_string(:too_large), do: "Too large"
+  defp error_to_string(:too_many_files), do: "You have selected too many files"
+
+  defp error_to_string(:not_accepted),
+    do: "You have selected an unacceptable file type"
 
   defp assign_form(socket, %Ecto.Changeset{} = changeset) do
     form = to_form(changeset, as: "user")
