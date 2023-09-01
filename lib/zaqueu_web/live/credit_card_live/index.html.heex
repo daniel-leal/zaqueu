@@ -8,46 +8,70 @@
   </:actions>
 </.header>
 
-<.table
-  id="credit_cards"
-  rows={@streams.credit_cards}
-  row_click={
-    fn {_id, credit_card} -> JS.navigate(~p"/credit_cards/#{credit_card}") end
-  }
->
-  <:col :let={{_id, credit_card}} label="Descrição">
-    <%= credit_card.description %>
-  </:col>
-  <:col :let={{_id, credit_card}} label="Bandeira">
-    <%= credit_card.brand %>
-  </:col>
-  <:col :let={{_id, credit_card}} label="Fechamento">
-    <%= credit_card.closing_day %>
-  </:col>
-  <:col :let={{_id, credit_card}} label="Vencimento">
-    <%= credit_card.expiry_day %>
-  </:col>
-  <:col :let={{_id, credit_card}} label="Limite" color="text-green-600">
-    <%= money(credit_card.limit) %>
-  </:col>
-  <:action :let={{_id, credit_card}}>
-    <div class="sr-only">
-      <.link navigate={~p"/credit_cards/#{credit_card}"}>Exibir</.link>
+<div class="pt-8">
+  <div
+    :if={
+      @streams.credit_cards
+      |> Enum.to_list()
+      |> length() == 0
+    }
+    class="bg-orange-100 border-l-4 rounded-md border-orange-500 text-orange-700 p-4 mt-8" role="alert">
+    <div class="flex space-x-2">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+        </svg>
+      <p class="font-bold">
+        Você não tem cartões de crédito cadastrados!
+      </p>
     </div>
-    <.link patch={~p"/credit_cards/#{credit_card}/edit"}>Editar</.link>
-  </:action>
-  <:action :let={{id, credit_card}}>
-    <.link
-      class="text-red-400"
-      phx-click={
-        JS.push("delete", value: %{id: credit_card.id}) |> hide("##{id}")
-      }
-      data-confirm="Tem certeza?"
-    >
-      Deletar
-    </.link>
-  </:action>
-</.table>
+  </div>
+
+  <.table
+    :if={
+      @streams.credit_cards
+      |> Enum.to_list()
+      |> length() > 0
+    }
+    id="credit_cards"
+    rows={@streams.credit_cards}
+    row_click={
+      fn {_id, credit_card} -> JS.navigate(~p"/credit_cards/#{credit_card}") end
+    }
+  >
+    <:col :let={{_id, credit_card}} label="Descrição">
+      <%= credit_card.description %>
+    </:col>
+    <:col :let={{_id, credit_card}} label="Bandeira">
+      <%= credit_card.brand %>
+    </:col>
+    <:col :let={{_id, credit_card}} label="Fechamento">
+      <%= credit_card.closing_day %>
+    </:col>
+    <:col :let={{_id, credit_card}} label="Vencimento">
+      <%= credit_card.expiry_day %>
+    </:col>
+    <:col :let={{_id, credit_card}} label="Limite" color="text-green-600">
+      <%= money(credit_card.limit) %>
+    </:col>
+    <:action :let={{_id, credit_card}}>
+      <div class="sr-only">
+        <.link navigate={~p"/credit_cards/#{credit_card}"}>Exibir</.link>
+      </div>
+      <.link patch={~p"/credit_cards/#{credit_card}/edit"}>Editar</.link>
+    </:action>
+    <:action :let={{id, credit_card}}>
+      <.link
+        class="text-red-400"
+        phx-click={
+          JS.push("delete", value: %{id: credit_card.id}) |> hide("##{id}")
+        }
+        data-confirm="Tem certeza?"
+      >
+        Deletar
+      </.link>
+    </:action>
+  </.table>
+</div>
 
 <.modal
   :if={@live_action in [:new, :edit]}
