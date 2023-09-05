@@ -6,9 +6,9 @@ name: Elixir CI
 # different name for the main branch like "master" or "production".
 on:
   push:
-    branches: ['16-add-github-ci-pipeline']
+    branches: ['main']
   pull_request:
-    branches: ['16-add-github-ci-pipeline']
+    branches: ['main']
 
 env:
   MIX_ENV: test
