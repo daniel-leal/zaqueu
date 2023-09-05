@@ -134,7 +134,7 @@ defmodule ZaqueuWeb.UserRegistrationLive do
         {:ok, "/uploads/#{Path.basename(dest)}"}
       end)
 
-    uploaded_files = if length(uploaded_files) == 0, do: @default_avatar
+    uploaded_files = if Enum.empty?(uploaded_files), do: @default_avatar
 
     user_params = Map.put(user_params, "avatar", hd(uploaded_files))
 

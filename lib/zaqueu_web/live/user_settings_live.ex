@@ -3,6 +3,7 @@ defmodule ZaqueuWeb.UserSettingsLive do
 
   alias Zaqueu.Identity
 
+  @impl true
   def render(assigns) do
     ~H"""
     <div class="mb-8">
@@ -73,6 +74,7 @@ defmodule ZaqueuWeb.UserSettingsLive do
     """
   end
 
+  @impl true
   def mount(%{"token" => token}, _session, socket) do
     socket =
       case Identity.update_user_email(socket.assigns.current_user, token) do
@@ -108,6 +110,16 @@ defmodule ZaqueuWeb.UserSettingsLive do
     {:ok, socket}
   end
 
+  @impl true
+  def handle_params(_params, url, socket) do
+    socket =
+      socket
+      |> assign(:current_path, url)
+
+    {:noreply, socket}
+  end
+
+  @impl true
   def handle_event("validate_email", params, socket) do
     %{"current_password" => password, "user" => user_params} = params
 
@@ -124,6 +136,7 @@ defmodule ZaqueuWeb.UserSettingsLive do
      )}
   end
 
+  @impl true
   def handle_event("update_email", params, socket) do
     %{"current_password" => password, "user" => user_params} = params
     user = socket.assigns.current_user
@@ -154,6 +167,7 @@ defmodule ZaqueuWeb.UserSettingsLive do
     end
   end
 
+  @impl true
   def handle_event("validate_password", params, socket) do
     %{"current_password" => password, "user" => user_params} = params
 
@@ -167,6 +181,7 @@ defmodule ZaqueuWeb.UserSettingsLive do
      assign(socket, password_form: password_form, current_password: password)}
   end
 
+  @impl true
   def handle_event("update_password", params, socket) do
     %{"current_password" => password, "user" => user_params} = params
     user = socket.assigns.current_user
