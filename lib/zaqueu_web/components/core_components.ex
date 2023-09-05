@@ -801,4 +801,48 @@ defmodule ZaqueuWeb.CoreComponents do
   def translate_errors(errors, field) when is_list(errors) do
     for {^field, {msg, opts}} <- errors, do: translate_error({msg, opts})
   end
+
+  attr(:navigate, :any, required: true)
+  attr(:current_path, :any, required: true)
+  slot(:inner_block, required: true)
+
+  def nav_link(assigns) do
+    ~H"""
+    <.link
+      :if={@current_path == @navigate}
+      navigate={@navigate}
+      class="bg-gray-900 text-white px-3 py-2 rounded-md text-sm font-medium">
+      <%= render_block(@inner_block) %>
+    </.link>
+    <.link
+      :if={@current_path != @navigate}
+      navigate={@navigate}
+      class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
+      <%= render_block(@inner_block) %>
+    </.link>
+    """
+  end
+
+  attr(:current_path, :string)
+
+  def navbar(assigns) do
+    %URI{
+      path: path
+    } = URI.parse(assigns.current_path)
+
+    assigns = assign(assigns, :path, path)
+
+    ~H"""
+    <div class="hidden md:block">
+      <div class="ml-10 flex items-baseline space-x-4">
+        <.nav_link current_path={@path} navigate="/bank_accounts">
+          Contas
+        </.nav_link>
+        <.nav_link current_path={@path} navigate="/credit_cards">
+          Cartões de Crédito
+        </.nav_link>
+      </div>
+    </div>
+    """
+  end
 end
