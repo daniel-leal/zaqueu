@@ -103,3 +103,16 @@ jobs:
       # Step: Execute the tests.
       - name: Run tests
         run: mix test
+
+  deploy:
+    needs: test # Will only run if the test job succeeds
+    if: github.ref == 'refs/heads/main' # Only run this job if it is on the main branch
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+      - run: sudo pip install gigalixir --ignore-installed six
+      - run: gigalixir login -e "${{ secrets.GIGALIXIR_EMAIL }}" -y -p "${{ secrets.GIGALIXIR_PASSWORD }}"
+      - run: gigalixir git:remote zaqueu
+      - run: git push -f gigalixir HEAD:refs/heads/master
