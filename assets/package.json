@@ -1,5 +1,8 @@
 {
   "dependencies": {
     "alpinejs": "^3.12.0"
+  },
+  "scripts": {
+    "deploy": "cd .. && mix assets.deploy && rm -f _build/esbuild"
   }
 }
