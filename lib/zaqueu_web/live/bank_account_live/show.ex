@@ -11,9 +11,10 @@ defmodule ZaqueuWeb.BankAccountLive.Show do
   end
 
   @impl true
-  def handle_params(%{"id" => id}, _, socket) do
+  def handle_params(%{"id" => id}, url, socket) do
     {:noreply,
      socket
+     |> assign(:current_path, url)
      |> assign(:page_title, page_title(socket.assigns.live_action))
      |> assign(:bank_account, BankAccountQueries.get_bank_account_by_id!(id))}
   end

@@ -12,11 +12,12 @@ defmodule ZaqueuWeb.CreditCardLive.Show do
   @impl true
   def handle_params(
         %{"id" => id, "invoice_id" => invoice_id} = params,
-        _url,
+        url,
         socket
       ) do
     socket =
       socket
+      |> assign(:current_path, url)
       |> assign(:credit_card, CreditCardQueries.get_credit_card_by_id!(id))
       |> assign(:total, InvoiceQueries.get_total_invoices_by_credit_card(id))
       |> assign(:invoice, InvoiceQueries.get_invoice_by_id!(invoice_id))
@@ -26,9 +27,10 @@ defmodule ZaqueuWeb.CreditCardLive.Show do
   end
 
   @impl true
-  def handle_params(%{"id" => id}, _, socket) do
+  def handle_params(%{"id" => id}, url, socket) do
     {:noreply,
      socket
+     |> assign(:current_path, url)
      |> assign(:page_title, page_title(socket.assigns.live_action))
      |> assign(:credit_card, CreditCardQueries.get_credit_card_by_id!(id))
      |> assign(:total, InvoiceQueries.get_total_invoices_by_credit_card(id))
