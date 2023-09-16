@@ -80,7 +80,7 @@ defmodule Zaqueu.Financial.Schemas.Transaction do
     %Invoice{start_date: start_date, closing_date: closing_date} =
       InvoiceQueries.get_invoice_by_id!(invoice_id)
 
-    if Timex.after?(date, start_date) and Timex.before?(date, closing_date) do
+    if Timex.between?(date, Timex.shift(start_date, days: -1), closing_date) do
       changeset
     else
       add_error(
