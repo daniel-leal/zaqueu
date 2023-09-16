@@ -110,6 +110,18 @@ defmodule Zaqueu.Financial.Transactions.CreateTest do
                 {"A data da transação deve estar dentro do período da fatura, de: 26/08/2023 até 26/09/2023",
                  []}}
              ]
+
+      attrs =
+        params_for(:transaction, %{
+          kind: credit_card_kind,
+          category: category,
+          invoice: invoice,
+          date: ~D[2023-08-26]
+        })
+
+      response = Financial.create_transaction(attrs)
+
+      assert {:ok, %Transaction{}} = response
     end
   end
 end
