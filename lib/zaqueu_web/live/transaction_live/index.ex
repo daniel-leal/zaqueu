@@ -14,6 +14,7 @@ defmodule ZaqueuWeb.TransactionLive.Index do
   def mount(%{"id" => id, "invoice_id" => invoice_id}, _session, socket) do
     month = InvoiceQueries.get_invoice_month_name(invoice_id)
     transactions = TransactionQueries.get_transactions_by_invoice_id(invoice_id)
+    total_amount = InvoiceQueries.get_total_by_invoice_id(invoice_id)
 
     credit_card_kind_id =
       KindQueries.get_kind_by_description("Cartão de Crédito").id
@@ -21,6 +22,7 @@ defmodule ZaqueuWeb.TransactionLive.Index do
     socket =
       socket
       |> assign(:month, month)
+      |> assign(:total_amount, total_amount)
       |> assign(:credit_card_id, id)
       |> assign(:invoice_id, invoice_id)
       |> assign(:kind_id, credit_card_kind_id)

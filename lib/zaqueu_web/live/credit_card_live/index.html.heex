@@ -50,6 +50,9 @@
     row_click={
       fn {_id, credit_card} -> JS.navigate(~p"/credit_cards/#{credit_card}") end
     }
+    total_value={money(@total_limits)}
+    total_colspan="4"
+    total_color="text-green-600"
   >
     <:col :let={{_id, credit_card}} label="Descrição">
       <%= credit_card.description %>

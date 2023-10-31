@@ -11,14 +11,16 @@ defmodule ZaqueuWeb.BankAccountLive.Index do
   @impl true
   def mount(_params, _session, socket) do
     current_user = socket.assigns.current_user
+    bank_accounts = BankAccountQueries.list_bank_accounts(current_user.id)
+
+    total_balance =
+      BankAccountQueries.get_bank_accounts_balance(current_user.id)
 
     socket =
       socket
       |> assign(:banks, BankQueries.list_banks())
-      |> stream(
-        :bank_accounts,
-        BankAccountQueries.list_bank_accounts(current_user.id)
-      )
+      |> assign(:total_balance, total_balance)
+      |> stream(:bank_accounts, bank_accounts)
 
     {:ok, socket}
   end

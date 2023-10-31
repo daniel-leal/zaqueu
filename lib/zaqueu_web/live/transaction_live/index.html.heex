@@ -50,15 +50,18 @@
     }
     id="transactions"
     rows={@streams.transactions}
+    total_value={money(@total_amount)}
+    total_colspan="2"
+    total_color="text-red-500"
   >
     <:col :let={{_id, transaction}} label="Descrição">
       <%= transaction.description %>
     </:col>
-    <:col :let={{_id, transaction}} label="Valor" color="text-red-500">
-      <%= money(transaction.amount) %>
-    </:col>
     <:col :let={{_id, transaction}} label="Data">
       <%= local_date(transaction.date) %>
+    </:col>
+    <:col :let={{_id, transaction}} label="Valor" color="text-red-500">
+      <%= money(transaction.amount) %>
     </:col>
     <:action :let={{_id, transaction}}>
       <div class="sr-only">
