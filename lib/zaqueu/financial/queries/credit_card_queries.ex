@@ -37,4 +37,10 @@ defmodule Zaqueu.Financial.Queries.CreditCardQueries do
 
   """
   def get_credit_card_by_id!(id), do: Repo.get!(CreditCard, id)
+
+  def get_credit_cards_total_limit(user_id) do
+    Repo.one(
+      from(c in CreditCard, select: sum(c.limit), where: c.user_id == ^user_id)
+    )
+  end
 end

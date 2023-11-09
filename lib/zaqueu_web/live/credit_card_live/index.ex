@@ -9,14 +9,18 @@ defmodule ZaqueuWeb.CreditCardLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    current_user = socket.assigns.current_user
+    current_user_id = socket.assigns.current_user.id
+    credit_cards = CreditCardQueries.list_credit_cards(current_user_id)
 
-    {:ok,
-     stream(
-       socket,
-       :credit_cards,
-       CreditCardQueries.list_credit_cards(current_user.id)
-     )}
+    total_limits =
+      CreditCardQueries.get_credit_cards_total_limit(current_user_id)
+
+    socket =
+      socket
+      |> assign(:total_limits, total_limits)
+      |> stream(:credit_cards, credit_cards)
+
+    {:ok, socket}
   end
 
   @impl true

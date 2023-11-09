@@ -539,6 +539,9 @@ defmodule ZaqueuWeb.CoreComponents do
   """
   attr(:id, :string, required: true)
   attr(:rows, :list, required: true)
+  attr(:total_value, :string, default: "", required: false)
+  attr(:total_colspan, :string, required: false)
+  attr(:total_color, :string, default: "text-gray-900", required: false)
 
   attr(:row_id, :any,
     default: nil,
@@ -569,10 +572,6 @@ defmodule ZaqueuWeb.CoreComponents do
       with %{rows: %Phoenix.LiveView.LiveStream{}} <- assigns do
         assign(assigns, row_id: assigns.row_id || fn {id, _item} -> id end)
       end
-
-    # IO.inspect(assigns.col)
-
-    # color = Map.get(assigns.col, :color, "text-gray-900")
 
     ~H"""
     <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg my-4">
@@ -633,6 +632,14 @@ defmodule ZaqueuWeb.CoreComponents do
             </td>
           </tr>
         </tbody>
+        <tfoot :if={@total_value != ""}>
+          <tr>
+            <td class="px-6 py-3 text-base bold font-semibold" colspan={@total_colspan}>
+              Total
+            </td>
+            <td class={["px-3 py-5 text-sm font-semibold", @total_color]}><%= @total_value %></td>
+          </tr>
+      </tfoot>
       </table>
     </div>
     """

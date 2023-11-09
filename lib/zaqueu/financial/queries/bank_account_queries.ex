@@ -47,4 +47,14 @@ defmodule Zaqueu.Financial.Queries.BankAccountQueries do
       )
     )
   end
+
+  def get_bank_accounts_balance(user_id) do
+    query =
+      from(b in BankAccount,
+        select: sum(b.initial_balance),
+        where: b.user_id == ^user_id
+      )
+
+    Repo.one(query)
+  end
 end

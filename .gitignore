@@ -40,3 +40,4 @@ npm-debug.log
 
 .zed
 .DS_Store
+.env

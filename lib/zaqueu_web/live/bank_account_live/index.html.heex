@@ -52,6 +52,8 @@
         JS.navigate(~p"/bank_accounts/#{bank_account}")
       end
     }
+    total_colspan="0"
+    total_value={money(@total_balance)}
   >
     <:col :let={{_id, bank_account}} label="Banco">
       <%= bank_account.bank.name %>
