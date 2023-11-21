@@ -10,11 +10,7 @@
 
 <div class="pt-8">
   <div
-    :if={
-      @streams.bank_accounts
-      |> Enum.to_list()
-      |> length() == 0
-    }
+    :if={@bank_accounts_count == 0}
     class="bg-orange-100 border-l-4 rounded-md border-orange-500 text-orange-700 p-4 mt-8"
     role="alert"
   >
@@ -40,11 +36,7 @@
   </div>
 
   <.table
-    :if={
-      @streams.bank_accounts
-      |> Enum.to_list()
-      |> length() > 0
-    }
+    :if={@bank_accounts_count > 0}
     id="bank_accounts"
     rows={@streams.bank_accounts}
     row_click={

@@ -20,6 +20,7 @@ defmodule ZaqueuWeb.BankAccountLive.Index do
       socket
       |> assign(:banks, BankQueries.list_banks())
       |> assign(:total_balance, total_balance)
+      |> assign(:bank_accounts_count, length(bank_accounts))
       |> stream(:bank_accounts, bank_accounts)
 
     {:ok, socket}
