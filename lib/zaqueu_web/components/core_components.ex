@@ -158,7 +158,9 @@ defmodule ZaqueuWeb.CoreComponents do
 
   attr(:close, :boolean, default: true, doc: "whether the flash can be closed")
 
-  attr(:rest, :global, doc: "the arbitrary HTML attributes to add to the flash container")
+  attr(:rest, :global,
+    doc: "the arbitrary HTML attributes to add to the flash container"
+  )
 
   slot(:inner_block,
     doc: "the optional inner block that renders the flash message"
@@ -336,27 +338,34 @@ defmodule ZaqueuWeb.CoreComponents do
 
   attr(:type, :string,
     default: "text",
-    values: ~w(checkbox color date datetime-local email file hidden month number password
+    values:
+      ~w(checkbox color date datetime-local email file hidden month number password
                range radio search select tel text textarea time url week)
   )
 
   attr(:field, Phoenix.HTML.FormField,
-    doc: "a form field struct retrieved from the form, for example: @form[:email]"
+    doc:
+      "a form field struct retrieved from the form, for example: @form[:email]"
   )
 
   attr(:errors, :list, default: [])
   attr(:checked, :boolean, doc: "the checked flag for checkbox inputs")
   attr(:prompt, :string, default: nil, doc: "the prompt for select inputs")
 
-  attr(:options, :list, doc: "the options to pass to Phoenix.HTML.Form.options_for_select/2")
+  attr(:options, :list,
+    doc: "the options to pass to Phoenix.HTML.Form.options_for_select/2"
+  )
 
   attr(:multiple, :boolean,
     default: false,
     doc: "the multiple flag for select inputs"
   )
 
-  attr(:rest, :global, include: ~w(autocomplete cols disabled form max maxlength min minlength
-                                   pattern placeholder readonly required rows size step))
+  attr(:rest, :global,
+    include:
+      ~w(autocomplete cols disabled form max maxlength min minlength
+                                   pattern placeholder readonly required rows size step)
+  )
 
   attr(:class, :string, default: "")
   attr(:label_class, :string, default: "")
@@ -444,7 +453,9 @@ defmodule ZaqueuWeb.CoreComponents do
   def input(assigns) do
     ~H"""
     <div phx-feedback-for={@name}>
-      <.label for={@id} color={@label_color} label_class={@label_class}><%= @label %></.label>
+      <.label for={@id} color={@label_color} label_class={@label_class}>
+        <%= @label %>
+      </.label>
       <input
         type={@type}
         name={@name}
@@ -555,7 +566,8 @@ defmodule ZaqueuWeb.CoreComponents do
 
   attr(:row_item, :any,
     default: &Function.identity/1,
-    doc: "the function for mapping each row before calling the :col and :action slots"
+    doc:
+      "the function for mapping each row before calling the :col and :action slots"
   )
 
   slot :col, required: true do
@@ -634,12 +646,17 @@ defmodule ZaqueuWeb.CoreComponents do
         </tbody>
         <tfoot :if={@total_value != ""}>
           <tr>
-            <td class="px-6 py-3 text-base bold font-semibold" colspan={@total_colspan}>
+            <td
+              class="px-6 py-3 text-base bold font-semibold"
+              colspan={@total_colspan}
+            >
               Total
             </td>
-            <td class={["px-3 py-5 text-sm font-semibold", @total_color]}><%= @total_value %></td>
+            <td class={["px-3 py-5 text-sm font-semibold", @total_color]}>
+              <%= @total_value %>
+            </td>
           </tr>
-      </tfoot>
+        </tfoot>
       </table>
     </div>
     """
@@ -755,7 +772,9 @@ defmodule ZaqueuWeb.CoreComponents do
     |> JS.show(to: "##{id}")
     |> JS.show(
       to: "##{id}-bg",
-      transition: {"transition-all transform ease-out duration-300", "opacity-0", "opacity-100"}
+      transition:
+        {"transition-all transform ease-out duration-300", "opacity-0",
+         "opacity-100"}
     )
     |> show("##{id}-container")
     |> JS.add_class("overflow-hidden", to: "body")
@@ -766,7 +785,9 @@ defmodule ZaqueuWeb.CoreComponents do
     js
     |> JS.hide(
       to: "##{id}-bg",
-      transition: {"transition-all transform ease-in duration-200", "opacity-100", "opacity-0"}
+      transition:
+        {"transition-all transform ease-in duration-200", "opacity-100",
+         "opacity-0"}
     )
     |> hide("##{id}-container")
     |> JS.hide(to: "##{id}", transition: {"block", "block", "hidden"})
@@ -818,14 +839,16 @@ defmodule ZaqueuWeb.CoreComponents do
     <.link
       :if={@current_path == @navigate}
       navigate={@navigate}
-      class="bg-gray-900 text-white px-3 py-2 rounded-md text-sm font-medium">
-      <%= render_block(@inner_block) %>
+      class="bg-gray-900 text-white px-3 py-2 rounded-md text-sm font-medium"
+    >
+      <%= render_slot(@inner_block) %>
     </.link>
     <.link
       :if={@current_path != @navigate}
       navigate={@navigate}
-      class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
-      <%= render_block(@inner_block) %>
+      class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+    >
+      <%= render_slot(@inner_block) %>
     </.link>
     """
   end

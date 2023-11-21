@@ -18,6 +18,7 @@ defmodule ZaqueuWeb.CreditCardLive.Index do
     socket =
       socket
       |> assign(:total_limits, total_limits)
+      |> assign(:credit_cards_count, length(credit_cards))
       |> stream(:credit_cards, credit_cards)
 
     {:ok, socket}

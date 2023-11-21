@@ -18,7 +18,8 @@ defmodule Zaqueu.Financial.Queries.TransactionQueries do
       from(
         t in Transaction,
         where: t.invoice_id == ^invoice_id,
-        order_by: t.date
+        order_by: t.date,
+        preload: [:category]
       )
 
     Repo.all(query)
@@ -40,5 +41,20 @@ defmodule Zaqueu.Financial.Queries.TransactionQueries do
   """
   def get_transaction_by_id!(transaction_id) do
     Repo.get!(Transaction, transaction_id)
+  end
+
+  def search_transactions_by_description(invoice_id, description) do
+    search_params = "%#{description}%"
+
+    query =
+      from(
+        t in Transaction,
+        where:
+          t.invoice_id == ^invoice_id and ilike(t.description, ^search_params),
+        order_by: t.date,
+        preload: [:category]
+      )
+
+    Repo.all(query)
   end
 end
