@@ -45,6 +45,12 @@ defmodule ZaqueuWeb.Router do
   scope "/", ZaqueuWeb do
     pipe_through([:browser, :require_authenticated_user])
 
+    get(
+      "/credit_cards/:id/invoices/:invoice_id/transactions/export",
+      TransactionsController,
+      :export
+    )
+
     live_session :require_authenticated_user,
       on_mount: [{ZaqueuWeb.UserAuth, :ensure_authenticated}] do
       live("/", BankAccountLive.Index, :index)

@@ -1,17 +1,3 @@
-invoices =
-  Enum.map(8..12, fn m ->
-    start_invoice = Timex.to_date({2023, m, 7})
-    closing_invoice = Timex.shift(start_invoice, months: 1)
+alias Zaqueu.Financial.Queries.TransactionQueries
 
-    expiry_invoice =
-      Timex.shift(start_invoice,
-        months: 1,
-        days: 14 - 7
-      )
-
-    %{
-      start_date: start_invoice,
-      closing_date: closing_invoice,
-      expiry_date: expiry_invoice
-    }
-  end)
+invoice_id = "a48993c7-858a-4235-ab63-9018d6439da9"

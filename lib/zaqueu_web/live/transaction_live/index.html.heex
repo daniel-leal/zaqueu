@@ -8,6 +8,11 @@
     }>
       <.button>Nova Transação</.button>
     </.link>
+    <.link href={
+      ~p"/credit_cards/#{@credit_card_id}/invoices/#{@invoice_id}/transactions/export"
+    }>
+      <.button class="bg-gray-500 hover:bg-gray-700">Exportar</.button>
+    </.link>
   </:actions>
 </.header>
 
@@ -117,7 +122,6 @@
     invoice_id={@invoice_id}
     kind_id={@kind_id}
     categories={@categories}
-    kinds={@kinds}
     patch={
       ~p"/credit_cards/#{@credit_card_id}/invoices/#{@invoice_id}/transactions/"
     }
