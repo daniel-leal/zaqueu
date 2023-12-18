@@ -31,6 +31,10 @@ defmodule Zaqueu.Financial do
   alias Zaqueu.Financial.Commands.Transactions.Change, as: ChangeTransaction
   alias Zaqueu.Financial.Commands.Transactions.Create, as: CreateTransaction
   alias Zaqueu.Financial.Commands.Transactions.Delete, as: DeleteTransaction
+
+  alias Zaqueu.Financial.Commands.Transactions.GenerateExcel,
+    as: GenerateTransactionsExcel
+
   alias Zaqueu.Financial.Commands.Transactions.Update, as: UpdateTransaction
 
   defdelegate change_bank_account(bank_account, attrs \\ %{}),
@@ -100,6 +104,10 @@ defmodule Zaqueu.Financial do
   defdelegate delete_transaction(transaction),
     to: DeleteTransaction,
     as: :delete
+
+  defdelegate generate_transactions_excel(transactions),
+    to: GenerateTransactionsExcel,
+    as: :generate_excel
 
   defdelegate update_transaction(transaction, attrs),
     to: UpdateTransaction,

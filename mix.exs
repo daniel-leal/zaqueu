@@ -54,7 +54,8 @@ defmodule Zaqueu.MixProject do
       {:credo, "~> 1.6", only: [:dev, :test], runtime: false},
       {:timex, "~> 3.0"},
       {:ex_machina, "~> 2.7.0", only: :test},
-      {:mock, "~> 0.3.0", only: :test}
+      {:mock, "~> 0.3.0", only: :test},
+      {:elixlsx, "~> 0.5.1"}
     ]
   end
 

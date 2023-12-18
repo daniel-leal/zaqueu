@@ -26,10 +26,9 @@ defmodule ZaqueuWeb.TransactionLive.Index do
       |> assign(:credit_card_id, id)
       |> assign(:invoice_id, invoice_id)
       |> assign(:kind_id, credit_card_kind_id)
-      |> assign(:kinds, KindQueries.list_kinds())
-      |> assign(:categories, CategoryQueries.list_categories())
       |> assign(:search, "")
       |> assign(:transactions_count, length(transactions))
+      |> assign(:categories, CategoryQueries.list_categories())
       |> stream(:transactions, transactions)
 
     {:ok, socket}
